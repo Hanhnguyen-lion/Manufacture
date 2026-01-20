@@ -1,25 +1,28 @@
+from contextlib import asynccontextmanager
 from dotenv import dotenv_values
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pymongo import MongoClient
 from config import settings
-from controller import CompanyController
+# from controller import CompanyController, userController
+from controller.companyController import company
+from controller.departmentController import department
 
 config = dotenv_values(".env");
 
-app = FastAPI()
 
-@app.on_event("startup")
-def startup_db_client():
-    app.mongodb_client = MongoClient(config["ATLAS_URI"])
-    app.database = app.mongodb_client[config["DB_NAME"]]
-    print("Connected to the MongoDB database!")
+# @asynccontextmanager
+# async def lifespan(app: FastAPI):
+#     app.mongodb_client = MongoClient(config["ATLAS_URI"])
+#     app.database = app.mongodb_client[config["DB_NAME"]]
+#     print("Connected to the MongoDB database!")
+#     yield
+#     app.mongodb_client.close()
+#     print("Close to the MongoDB database!")
 
-@app.on_event("shutdown")
-def shutdown_db_client():
-    app.mongodb_client.close()
-    print("Close to the MongoDB database!")
 
+# app = FastAPI(lifespan=lifespan);
+app = FastAPI();
 origins = [
     settings.CLIENT_ORIGIN,
 ]
@@ -31,4 +34,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(CompanyController.router, tags=["companies"], prefix="/company")
+# app.include_router(CompanyController.router, tags=["companies"], prefix="/api/company")
+
+app.include_router(company, tags=["companies"], prefix="/api/company")
+app.include_router(department, tags=["departments"], prefix="/api/department")
