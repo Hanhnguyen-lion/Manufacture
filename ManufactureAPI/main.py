@@ -4,9 +4,11 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pymongo import MongoClient
 from config import settings
-# from controller import CompanyController, userController
+
+from controller.userController import user_router
 from controller.companyController import company
 from controller.departmentController import department
+from controller.employeeController import employee_router
 
 config = dotenv_values(".env");
 
@@ -36,5 +38,8 @@ app.add_middleware(
 
 # app.include_router(CompanyController.router, tags=["companies"], prefix="/api/company")
 
+app.include_router(user_router, tags=["users"], prefix="/api/user")
 app.include_router(company, tags=["companies"], prefix="/api/company")
 app.include_router(department, tags=["departments"], prefix="/api/department")
+app.include_router(employee_router, tags=["employees"], prefix="/api/employee")
+
