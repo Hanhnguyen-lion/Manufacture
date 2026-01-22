@@ -2,6 +2,7 @@ from datetime import datetime
 from pydantic import BaseModel
 
 class Employee(BaseModel):
+    company_id:str
     department_id:str
     name:str
     job_title:str

@@ -1,6 +1,7 @@
 def employeeEntity(item) -> dict:
     return{
         "id": str(item["_id"]),
+        "company_id": item.get("company_id", None),
         "department_id": item["department_id"],
         "name": item["name"],
         "job_title": item["job_title"],
