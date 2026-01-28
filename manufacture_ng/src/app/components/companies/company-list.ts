@@ -12,7 +12,9 @@ import { enviroment } from '../../enviroments/enviroment';
 import { CompanyItem } from '../../models/company';
 import { FormArray, FormBuilder, FormControl, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import { CompanyAdd } from './company.add';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { CompanyDeleteDialog } from './company.delete.dialog';
+import { CompanyEditDialog } from './company.edit.dialog';
 
 @Component({
   selector: 'app-company-list',
@@ -96,23 +98,57 @@ export class CompanyList implements OnInit, AfterViewInit {
     this.dataSource.sort = this.sort;
   }
 
-  startEdit(id: number) {
-  }
+  startEdit(id: string) {
+  
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+  
+    let companyItem = this.srv.FindItemById(this.api_url, id);
+    companyItem.subscribe(item =>{
+      dialogConfig.data = item;
 
-  deleteItem(id: number) {
+      const dialogRef = this.dialog.open(CompanyEditDialog, dialogConfig);
+
+      dialogRef.afterClosed().subscribe(
+        () => this.FindAllCompanies()
+      );
+    })
+  
+}
+
+  deleteItem(id: string) {
+
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+    dialogConfig.data = {
+        id: id,
+        title: 'Delete Company'
+    };
+
+    const dialogRef = this.dialog.open(CompanyDeleteDialog, dialogConfig);
+
+    dialogRef.afterClosed().subscribe(
+      () => this.FindAllCompanies()
+    );
   }
 
   addNew(){
-    // const dialogRef = this.dialog.open(CompanyAdd, {
-    //   data: {}
-    // });
 
-    // dialogRef.afterClosed().subscribe(result => {
-    //   if (result === 1) {
-    //     // this.exampleDatabase.dataChange.value.push(this.dataService.getDialogData());
-    //     // this.refreshTable();
-    //   }
-    // });
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+    dialogConfig.data = {
+        id: 1,
+        title: 'Angular For Beginners'
+    };
+
+    const myCreatedDialogRef = this.dialog.open(CompanyAdd, dialogConfig);
+
+    myCreatedDialogRef.afterClosed().subscribe(
+      () => this.FindAllCompanies()
+    );
   }
 
   applyFilter(event: Event) {

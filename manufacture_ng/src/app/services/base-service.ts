@@ -32,7 +32,7 @@ export class BaseService {
   }
 
   AddItem(url: string, item: any): Observable<any>{
-    return this.http.post<any>(url, this.httpHeaders);
+    return this.http.post<any>(url, item, this.httpHeaders);
   }
 
   UpdateItem(url: string, item: any): Observable<any>{
