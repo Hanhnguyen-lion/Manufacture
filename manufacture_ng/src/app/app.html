@@ -9,13 +9,13 @@
         <mat-icon>home</mat-icon>
         <span>Home</span>
   </button>
-  <button mat-menu-item>
-        <mat-icon>people_outline</mat-icon>
-        <span>Connecting</span>
+  <button mat-menu-item routerLink="/Company">
+        <mat-icon>category</mat-icon>
+        <span>Company</span>
       </button>
-  <button mat-menu-item>
-        <mat-icon>videocam</mat-icon>
-        <span>Let's talk</span>
+  <button mat-menu-item routerLink="/Employee">
+        <mat-icon>personapron</mat-icon>
+        <span>Employee</span>
       </button>
   <button mat-menu-item>
         <mat-icon>exit_to_app</mat-icon>
@@ -26,123 +26,5 @@
   </span>
   <span class="fill-remaining-space">Manufacture</span>
 </mat-toolbar>
-<!-- <header>
-</header> -->
-<mat-form-field>
-  <mat-label>Filter</mat-label>
-  <input matInput (keyup)="applyFilter($event)" placeholder="filter employee" #input>
-</mat-form-field>
-
-<table mat-table [dataSource]="dataSource" 
-  matSort matSortActive="dob" matSortDisableClear matSortDirection="desc"
-  class="mat-elevation-z8">
-
-  <ng-container matColumnDef="id">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by id"> Id </th>
-    <td mat-cell *matCellDef="let element"> {{element.id}} </td>
-  </ng-container>
-
-  <!-- Name Column -->
-  <ng-container matColumnDef="last_name">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by last name"> Last Name </th>
-    <td mat-cell *matCellDef="let element"> {{element.last_name}} </td>
-  </ng-container>
-
-  <ng-container matColumnDef="first_name">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by first name"> First Name </th>
-    <td mat-cell *matCellDef="let element"> {{element.first_name}} </td>
-  </ng-container>
-
-  <ng-container matColumnDef="dob">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by date of birth"> Date of birth </th>
-    <td mat-cell *matCellDef="let element"> {{element.dob | date:"MM/dd/yyyy"}} </td>
-  </ng-container>
-
-  <ng-container matColumnDef="actions">
-    <th mat-header-cell *matHeaderCellDef>
-      <button mat-icon-button color="primary" (click)="addNew()">
-          <mat-icon aria-label="Example icon-button with a heart icon">add</mat-icon>
-        </button>
-    </th>
-    <td mat-cell *matCellDef="let element;let i=index;">
-        <button mat-icon-button color="primary" (click)="startEdit(i, element.id, element.last_name, element.first_name, element.dob)">
-          <mat-icon aria-label="Edit">edit</mat-icon>
-        </button>
-
-        <button mat-icon-button color="primary" (click)="deleteItem(i, element.id, element.last_name, element.first_name, element.dob)">
-          <mat-icon aria-label="Delete">delete</mat-icon>
-        </button>
-    </td>
-  </ng-container>
-
-  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-
-  <tr class="mat-row" *matNoDataRow>
-    <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
-  </tr>
-</table>
-<!-- 
-  <div class="container mat-elevation-z8">
-     <div class="form">
-      <mat-form-field floatPlaceholder="never" color="accent">
-        <input matInput #filter placeholder="Filter employees">
-      </mat-form-field>
-    </div>
-     <mat-table #table [dataSource]="dataSource" matSort class="mat-cell" matSortActive="first_name" matSortDirection="desc" matSortDisableClear>
-    <ng-container matColumnDef="id">
-      <mat-header-cell *matHeaderCellDef mat-sort-header>Id</mat-header-cell>
-      <mat-cell *matCellDef="let row" >{{row.id}}</mat-cell>
-    </ng-container>
-
-    <ng-container matColumnDef="last_name">
-      <mat-header-cell *matHeaderCellDef mat-sort-header>Last Name</mat-header-cell>
-      <mat-cell *matCellDef="let row"> {{row.last_name}}</mat-cell>
-    </ng-container>
-
-    <ng-container matColumnDef="first_name">
-      <mat-header-cell *matHeaderCellDef mat-sort-header>First Name</mat-header-cell>
-      <mat-cell *matCellDef="let row"> {{row.first_name}}</mat-cell>
-    </ng-container>
-
-    <ng-container matColumnDef="dob">
-      <mat-header-cell *matHeaderCellDef mat-sort-header>Date of birth</mat-header-cell>
-      <mat-cell *matCellDef="let row"> {{row.dob | date:'MM/dd/yyyy'}}</mat-cell>
-    </ng-container>
-
-    <ng-container matColumnDef="actions">
-      <mat-header-cell *matHeaderCellDef>
-        <button mat-icon-button color="primary" (click)="addNew()">
-          <mat-icon aria-label="Example icon-button with a heart icon">add</mat-icon>
-        </button>
-      </mat-header-cell>
-
-      <mat-cell *matCellDef="let row; let i=index;">
-        <button mat-icon-button color="primary" (click)="startEdit(i, row.id, row.last_name, row.first_name, row.dob)">
-          <mat-icon aria-label="Edit">edit</mat-icon>
-        </button>
-
-        <button mat-icon-button color="primary" (click)="deleteItem(i, row.id, row.last_name, row.first_name, row.dob)">
-          <mat-icon aria-label="Delete">delete</mat-icon>
-        </button>
-      </mat-cell>
-    </ng-container>
-
-    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
-  </mat-table>
-
-
-  <div class="no-results" [style.display]="dataSource.data.length == 0 ? '' : 'none'">
-    No results
-  </div> -->
-
-  <mat-paginator [length]="dataSource.data.length"
-                 [pageIndex]="0"
-                 [pageSize]="10"
-                 [pageSizeOptions]="[5, 10, 25, 100]">
-  </mat-paginator>
-  <!-- </div> -->
- <!-- <router-outlet>
-
-</router-outlet> -->
+<router-outlet>
+</router-outlet>

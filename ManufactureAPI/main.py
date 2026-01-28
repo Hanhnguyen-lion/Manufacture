@@ -3,7 +3,7 @@ from dotenv import dotenv_values
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pymongo import MongoClient
-from config import settings
+# from config import settings
 
 from controller.userController import user_router
 from controller.companyController import company
@@ -25,16 +25,21 @@ config = dotenv_values(".env");
 
 # app = FastAPI(lifespan=lifespan);
 app = FastAPI();
-origins = [
-    settings.CLIENT_ORIGIN,
-]
+# origins = [
+#     "http://localhost",
+#     "http://localhost:8080",
+#     "http://localhost:8081",
+#     "http://localhost:8000",
+#     "http://localhost:4200",
+# ]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
+    allow_origins=["*"],
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 # app.include_router(CompanyController.router, tags=["companies"], prefix="/api/company")
 
