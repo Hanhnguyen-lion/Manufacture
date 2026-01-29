@@ -6,17 +6,27 @@ import { MatInputModule } from '@angular/material/input';
 import { CompanyItem } from '../../models/company';
 import { BaseService } from '../../services/base-service';
 import { enviroment } from '../../enviroments/enviroment';
+import { MatButtonModule } from '@angular/material/button';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-company.edit.dialog',
-  imports: [MatDialogContent, MatFormFieldModule, 
-            FormsModule, MatDialogActions, 
-            MatDialogModule, ReactiveFormsModule,
-            MatInputModule],
+  imports: [MatDialogContent, 
+            MatButtonModule,
+            MatFormFieldModule, 
+            FormsModule, 
+            MatDialogActions, 
+            MatDialogModule, 
+            ReactiveFormsModule,
+            MatInputModule,
+            MatProgressSpinnerModule],
   templateUrl: './company.edit.dialog.html',
   styleUrl: './company.edit.dialog.css',
 })
 export class CompanyEditDialog implements OnInit {
+  
+  isUpdating:boolean = false;
+  
   form!: FormGroup;
   companyItem!: CompanyItem;
   id!:string;
@@ -35,6 +45,7 @@ export class CompanyEditDialog implements OnInit {
           this.companyItem = data;
         }
   ngOnInit(): void {
+    this.isUpdating = false;
     this.form = this.fb.group({
             name: [this.companyItem.name, Validators.required],
             email: [this.companyItem.email, Validators.email],
@@ -51,12 +62,13 @@ export class CompanyEditDialog implements OnInit {
 
   save() {
     if (this.form.valid){
+      this.isUpdating = true;
       this.companyItem = this.form.value;
       this.companyItem.id = this.id;
-      console.log(this.companyItem);
       this.svc.UpdateItem(this.api_url, this.companyItem).
       subscribe({
         next:()=>{
+          this.isUpdating = false;
           this.dialogRef.close();
         }
       })

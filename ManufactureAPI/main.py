@@ -13,18 +13,18 @@ from controller.employeeController import employee_router
 config = dotenv_values(".env");
 
 
-# @asynccontextmanager
-# async def lifespan(app: FastAPI):
-#     app.mongodb_client = MongoClient(config["ATLAS_URI"])
-#     app.database = app.mongodb_client[config["DB_NAME"]]
-#     print("Connected to the MongoDB database!")
-#     yield
-#     app.mongodb_client.close()
-#     print("Close to the MongoDB database!")
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    app.mongodb_client = MongoClient(config["ATLAS_URI"])
+    app.database = app.mongodb_client[config["DB_NAME"]]
+    print("Connected to the MongoDB database!")
+    yield
+    app.mongodb_client.close()
+    print("Close to the MongoDB database!")
 
 
-# app = FastAPI(lifespan=lifespan);
-app = FastAPI();
+app = FastAPI(lifespan=lifespan);
+# app = FastAPI();
 # origins = [
 #     "http://localhost",
 #     "http://localhost:8080",
@@ -35,7 +35,7 @@ app = FastAPI();
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=False,
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )

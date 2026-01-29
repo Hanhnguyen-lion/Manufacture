@@ -1,4 +1,4 @@
-<h2 mat-dialog-title>Add a company</h2>
+<h2 mat-dialog-title>Edit a company</h2>
 <mat-dialog-content [formGroup]="form">
   
     <mat-form-field>
@@ -46,6 +46,9 @@
 </mat-dialog-content>
 
 <mat-dialog-actions>
-    <button class="mat-raised-button" (click)="close()">Close</button>
-    <button class="mat-raised-button mat-primary" (click)="save()">Save</button>
+    <button matButton (click)="close()" [disabled]="isUpdating">Cancel</button>
+    <button matButton (click)="save()" [disabled]="isUpdating">Save</button>
+  @if(isUpdating){
+    <mat-spinner [diameter]="20"></mat-spinner>
+  }
 </mat-dialog-actions>

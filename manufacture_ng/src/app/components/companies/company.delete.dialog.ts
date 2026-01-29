@@ -1,27 +1,48 @@
-import { Component, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogActions, MatDialogContent, MatDialogRef } from '@angular/material/dialog';
-import { BaseService } from '../../services/base-service';
-import { enviroment } from '../../enviroments/enviroment';
+import 
+{ 
+    ChangeDetectionStrategy, 
+    Component, 
+    Inject 
+} from "@angular/core";
+import { MatButtonModule } from "@angular/material/button";
+import 
+{ 
+    MAT_DIALOG_DATA,
+    MatDialogActions, 
+    MatDialogContent, 
+    MatDialogRef, 
+    MatDialogTitle 
+} from "@angular/material/dialog";
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import { enviroment } from "../../enviroments/enviroment";
+import { BaseService } from "../../services/base-service";
 
 @Component({
-  selector: 'app-company.delete.dialog',
-  imports: [MatDialogContent, MatDialogActions],
-  templateUrl: './company.delete.dialog.html',
-  styleUrl: './company.delete.dialog.css',
+  selector: 'company.delete.dialog',
+  templateUrl: 'company.delete.dialog.html',
+  imports: [
+    MatButtonModule, 
+    MatDialogActions, 
+    MatDialogTitle, 
+    MatDialogContent,
+    MatProgressSpinnerModule],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CompanyDeleteDialog {
-
-  id!:string;
-
+  
+  isDeleting = false;
+  
+  id!: string;
+  
   private api_url:string = `${enviroment.apiUrl}/company`;
+
 
   constructor(
     private svc:BaseService,
     private dialogRef: MatDialogRef<CompanyDeleteDialog>,
-        @Inject(MAT_DIALOG_DATA) public data: any
+    @Inject(MAT_DIALOG_DATA) public data: any
   ){
     this.id = data.id;
-    console.log("this.id: ", this.id);
   }
 
   close(){
@@ -29,13 +50,15 @@ export class CompanyDeleteDialog {
   }
 
   save(){
-    this.svc.DeleteItem(this.api_url, this.id).subscribe(
+    this.isDeleting = true;
+    this.svc.DeleteItem(this.api_url, this.id)
+    .subscribe(
       {
         next: ()=>{
+          this.isDeleting = false;
           this.dialogRef.close();
         }
       }
-    );
+    )
   }
-
 }

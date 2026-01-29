@@ -33,19 +33,22 @@
   
     <mat-form-field>
         <textarea matInput
-               placeholder="Description"
-               formControlName="description"></textarea>
+               placeholder="Address"
+               formControlName="address"></textarea>
     </mat-form-field>
   
     <mat-form-field>
         <textarea matInput
-               placeholder="Address"
-               formControlName="address"></textarea>
+               placeholder="Description"
+               formControlName="description"></textarea>
     </mat-form-field>
  
 </mat-dialog-content>
 
 <mat-dialog-actions>
-    <button class="mat-raised-button" (click)="close()">Close</button>
-    <button class="mat-raised-button mat-primary" (click)="save()">Save</button>
+    <button matButton (click)="close()" [disabled]="isUpdating">Cancel</button>
+    <button matButton (click)="save()" [disabled]="isUpdating">Save</button>
+    @if(isUpdating){
+        <mat-spinner [diameter]="20"></mat-spinner>
+    }
 </mat-dialog-actions>

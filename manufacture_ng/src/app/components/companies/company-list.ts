@@ -1,4 +1,12 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { 
+  AfterViewInit, 
+  ChangeDetectionStrategy, 
+  Component, 
+  Inject, 
+  inject, 
+  OnInit, 
+  ViewChild 
+} from '@angular/core';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
@@ -10,39 +18,60 @@ import { BaseService } from '../../services/base-service';
 import { Observable } from 'rxjs';
 import { enviroment } from '../../enviroments/enviroment';
 import { CompanyItem } from '../../models/company';
-import { FormArray, FormBuilder, FormControl, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
-import { CompanyAdd } from './company.add';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { CompanyDeleteDialog } from './company.delete.dialog';
+import { 
+  FormsModule, 
+  ReactiveFormsModule
+} from '@angular/forms';
+import { 
+  MAT_DIALOG_DATA, 
+  MatDialog, 
+  MatDialogActions, 
+  MatDialogConfig, 
+  MatDialogContent, 
+  MatDialogModule, 
+  MatDialogRef, 
+  MatDialogTitle 
+} from '@angular/material/dialog';
 import { CompanyEditDialog } from './company.edit.dialog';
+import { MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { CompanyAddDialog } from './company.add.dialog';
+import { CompanyDeleteDialog } from './company.delete.dialog';
 
 @Component({
   selector: 'app-company-list',
-  imports: [ReactiveFormsModule, MatSortModule, MatTableModule,
-            MatIconModule, MatButtonModule, MatFormFieldModule,
-            MatInputModule, MatPaginatorModule,
-          FormsModule],
+  imports: [
+    ReactiveFormsModule, 
+    MatSortModule, 
+    MatTableModule,
+    MatIconModule, 
+    MatButtonModule, 
+    MatFormFieldModule,
+    MatInputModule, 
+    MatPaginatorModule,
+    FormsModule,
+    MatProgressSpinnerModule],
   templateUrl: './company-list.html',
   styleUrl: './company-list.css',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CompanyList implements OnInit, AfterViewInit {
 
-  displayedColumns: string[] = ['id', 'name',
-                              'description', 'country',
-                              'address', 'email',
-                              'phone', 'actions'];
+  displayedColumns: string[] = ['id', 
+                                'name',
+                                'country',
+                                'email',
+                                'phone', 
+                                'actions'];
   dataSource = new MatTableDataSource();
 
   private companies!: Observable<CompanyItem[]>;
 
   private api_url:string = `${enviroment.apiUrl}/company`;
 
-  form: any;
+  loading:boolean = false;    
 
   constructor(
     private srv: BaseService,
-    private formBuilder: FormBuilder,
-    private fb: FormBuilder,
     public dialog: MatDialog,
   ){}
 
@@ -51,46 +80,21 @@ export class CompanyList implements OnInit, AfterViewInit {
   @ViewChild(MatSort) sort!: MatSort;
 
   ngOnInit(){
-
-    // this.form = this.formBuilder.group({
-    //   name: ["", Validators.required],
-    //   description: [""],
-    //   country: [""],
-    //   address: [""],
-    //   email: ["", Validators.email],
-    //   phone: [""],
-    //   companyRows: this.formBuilder.array([])
-    // });
-
+    this.loading = false;
     this.FindAllCompanies();
   }
 
   FindAllCompanies(){
+    this.loading = true;
     this.companies = this.srv.FindAllItems(this.api_url);
+
     this.companies.subscribe(items=>{
-    // this.form = this.fb.group({
-    //           companyRows: this.fb.array(items.map(val => this.fb.group({
-    //             id: val.id,
-    //             name: new FormControl(val.name),
-    //             description: val.description,
-    //             country: val.country,
-    //             address: val.address,
-    //             phone: val.phone,
-    //             email: val.email,
-    //             action: new FormControl('existingRecord'),
-    //             isEditable: new FormControl(true),
-    //             isNewRow: new FormControl(false),
-    //           })
-    //           )) //end of fb array
-    //         }); // end of form group cretation
-
-      // this.dataSource.data = (this.form.get('companyRows') as FormArray).controls;
-
-
       this.dataSource.data = items;
       this.dataSource.sort = this.sort;
       this.dataSource.paginator = this.paginator;
-    })
+      this.loading = false;
+    });
+
   }
 
   ngAfterViewInit(){
@@ -99,7 +103,7 @@ export class CompanyList implements OnInit, AfterViewInit {
   }
 
   startEdit(id: string) {
-  
+    console.log("id:", id);
     const dialogConfig = new MatDialogConfig();
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
@@ -113,9 +117,9 @@ export class CompanyList implements OnInit, AfterViewInit {
       dialogRef.afterClosed().subscribe(
         () => this.FindAllCompanies()
       );
-    })
+    });
   
-}
+  }
 
   deleteItem(id: string) {
 
@@ -136,17 +140,9 @@ export class CompanyList implements OnInit, AfterViewInit {
 
   addNew(){
 
-    const dialogConfig = new MatDialogConfig();
-    dialogConfig.disableClose = true;
-    dialogConfig.autoFocus = true;
-    dialogConfig.data = {
-        id: 1,
-        title: 'Angular For Beginners'
-    };
+    const dialogRef = this.dialog.open(CompanyAddDialog);
 
-    const myCreatedDialogRef = this.dialog.open(CompanyAdd, dialogConfig);
-
-    myCreatedDialogRef.afterClosed().subscribe(
+    dialogRef.afterClosed().subscribe(
       () => this.FindAllCompanies()
     );
   }
@@ -157,3 +153,5 @@ export class CompanyList implements OnInit, AfterViewInit {
   }
 
 }
+
+
