@@ -1,6 +1,8 @@
 <h2 mat-dialog-title>Edit a company</h2>
 <mat-dialog-content [formGroup]="form">
-  
+    @if(errorMessage()){
+        <div class="error-message">{{errorMessage()}}</div>
+    }
     <mat-form-field>
         <input matInput
                placeholder="Code"
@@ -42,22 +44,22 @@
   
     <mat-form-field>
         <textarea matInput
-               placeholder="Description"
-               formControlName="description"></textarea>
+               placeholder="Address"
+               formControlName="address"></textarea>
     </mat-form-field>
   
     <mat-form-field>
         <textarea matInput
-               placeholder="Address"
-               formControlName="address"></textarea>
+               placeholder="Description"
+               formControlName="description"></textarea>
     </mat-form-field>
  
 </mat-dialog-content>
 
 <mat-dialog-actions>
-    <button matButton (click)="close()" [disabled]="isUpdating">Cancel</button>
-    <button matButton (click)="save()" [disabled]="isUpdating">Save</button>
-  @if(isUpdating){
+    <button matButton (click)="close()" [disabled]="isUpdating()">Cancel</button>
+    <button matButton (click)="save()" [disabled]="isUpdating()">Save</button>
+  @if(isUpdating()){
     <mat-spinner [diameter]="20"></mat-spinner>
   }
 </mat-dialog-actions>

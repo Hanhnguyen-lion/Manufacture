@@ -1,7 +1,7 @@
 <h2 mat-dialog-title>Add a company</h2>
 <mat-dialog-content [formGroup]="form">
       @if (errorMessage()){
-        <mat-label class="my-custom-error-label">{{errorMessage()}}</mat-label>
+        <mat-label class="error-message">{{errorMessage()}}</mat-label>
     }
 
     <mat-form-field>

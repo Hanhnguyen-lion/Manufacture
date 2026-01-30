@@ -5,6 +5,7 @@ import {
   Inject, 
   inject, 
   OnInit, 
+  signal, 
   ViewChild 
 } from '@angular/core';
 import { MatSort, MatSortModule } from '@angular/material/sort';
@@ -68,11 +69,11 @@ export class CompanyList implements OnInit, AfterViewInit {
 
   private api_url:string = `${enviroment.apiUrl}/company`;
 
-  loading:boolean = false;    
+  loading = signal(false);
 
   constructor(
     private srv: BaseService,
-    public dialog: MatDialog,
+    private dialog: MatDialog
   ){}
 
 
@@ -80,19 +81,19 @@ export class CompanyList implements OnInit, AfterViewInit {
   @ViewChild(MatSort) sort!: MatSort;
 
   ngOnInit(){
-    this.loading = false;
+    this.loading.set(false);
     this.FindAllCompanies();
   }
 
   FindAllCompanies(){
-    this.loading = true;
+    this.loading.set(true);
     this.companies = this.srv.FindAllItems(this.api_url);
 
     this.companies.subscribe(items=>{
       this.dataSource.data = items;
       this.dataSource.sort = this.sort;
       this.dataSource.paginator = this.paginator;
-      this.loading = false;
+    this.loading.set(false);
     });
 
   }

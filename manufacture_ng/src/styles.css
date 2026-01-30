@@ -16,3 +16,6 @@ table {
   font-size: 14px;
   width: 100%;
 }
+.error-message {
+  color: #dc3545;
+}

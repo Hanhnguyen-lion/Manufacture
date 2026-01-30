@@ -69,8 +69,13 @@ export class CompanyAddDialog implements OnInit {
       this.svc.AddItem(this.api_url, this.companyItem).
       subscribe({
         next:(response)=>{
-          this.isUpdating.set(false);
-          this.dialogRef.close();
+          if (response.status_code){
+            this.isUpdating.set(false);
+            this.errorMessage.set(response.detail);
+          }
+          else{
+            this.dialogRef.close();
+          }
         },
         error:(error)=>{
           this.isUpdating.set(false);

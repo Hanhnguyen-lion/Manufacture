@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, signal } from '@angular/core';
 import { MatDialogContent, MatDialogActions, MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -25,7 +25,9 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 })
 export class CompanyEditDialog implements OnInit {
   
-  isUpdating:boolean = false;
+  isUpdating = signal(false);
+
+  errorMessage = signal("");
   
   form!: FormGroup;
   companyItem!: CompanyItem;
@@ -45,7 +47,7 @@ export class CompanyEditDialog implements OnInit {
           this.companyItem = data;
         }
   ngOnInit(): void {
-    this.isUpdating = false;
+    this.isUpdating.set(false);
     this.form = this.fb.group({
             code: [this.companyItem.code, Validators.required],
             name: [this.companyItem.name, Validators.required],
@@ -63,14 +65,19 @@ export class CompanyEditDialog implements OnInit {
 
   save() {
     if (this.form.valid){
-      this.isUpdating = true;
+      this.isUpdating.set(true);
       this.companyItem = this.form.value;
       this.companyItem.id = this.id;
       this.svc.UpdateItem(this.api_url, this.companyItem).
       subscribe({
-        next:()=>{
-          this.isUpdating = false;
-          this.dialogRef.close();
+        next:(response)=>{
+          if (response.status_code){
+            this.isUpdating.set(false);
+            this.errorMessage.set(response.detail);
+          }
+          else{
+            this.dialogRef.close();
+          }
         }
       })
     }
