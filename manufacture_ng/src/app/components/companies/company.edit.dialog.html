@@ -3,6 +3,15 @@
   
     <mat-form-field>
         <input matInput
+               placeholder="Code"
+               formControlName="code">
+        @if(f["code"].errors){
+            <mat-error>Required field</mat-error>
+        }
+    </mat-form-field>
+  
+    <mat-form-field>
+        <input matInput
                placeholder="Name"
                formControlName="name">
         @if(f["name"].errors){

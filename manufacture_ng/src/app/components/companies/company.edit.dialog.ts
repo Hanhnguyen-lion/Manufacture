@@ -47,6 +47,7 @@ export class CompanyEditDialog implements OnInit {
   ngOnInit(): void {
     this.isUpdating = false;
     this.form = this.fb.group({
+            code: [this.companyItem.code, Validators.required],
             name: [this.companyItem.name, Validators.required],
             email: [this.companyItem.email, Validators.email],
             country: [this.companyItem.country],

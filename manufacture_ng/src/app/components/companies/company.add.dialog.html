@@ -1,5 +1,22 @@
 <h2 mat-dialog-title>Add a company</h2>
 <mat-dialog-content [formGroup]="form">
+      @if (errorMessage()){
+        <mat-label class="my-custom-error-label">{{errorMessage()}}</mat-label>
+    }
+
+    <mat-form-field>
+        <input matInput
+               placeholder="Code"
+               formControlName="code">
+            <mat-error>
+            @if(f["code"].errors){
+                Required field
+            }
+            @if(errorMessage()){
+               ERROR
+            }
+            </mat-error>
+</mat-form-field>
   
     <mat-form-field>
         <input matInput
@@ -42,13 +59,13 @@
                placeholder="Description"
                formControlName="description"></textarea>
     </mat-form-field>
- 
 </mat-dialog-content>
 
 <mat-dialog-actions>
-    <button matButton (click)="close()" [disabled]="isUpdating">Cancel</button>
-    <button matButton (click)="save()" [disabled]="isUpdating">Save</button>
-    @if(isUpdating){
+    <button matButton (click)="close()" [disabled]="isUpdating()">Cancel</button>
+    <button matButton (click)="save()" [disabled]="isUpdating()">Save</button>
+    @if(isUpdating()){
         <mat-spinner [diameter]="20"></mat-spinner>
     }
+
 </mat-dialog-actions>

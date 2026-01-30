@@ -1,4 +1,3 @@
-import uuid
 
 from pydantic import Field
 
@@ -6,6 +5,7 @@ from pydantic import Field
 def CompanyEntity(item) -> dict:
     return {
         "id": str(item["_id"]),
+        "code": item.get("code", None),
         "name": item["name"],
         "description": item["description"],
         "country": item["country"],

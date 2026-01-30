@@ -56,7 +56,7 @@ import { CompanyDeleteDialog } from './company.delete.dialog';
 })
 export class CompanyList implements OnInit, AfterViewInit {
 
-  displayedColumns: string[] = ['id', 
+  displayedColumns: string[] = ['code', 
                                 'name',
                                 'country',
                                 'email',

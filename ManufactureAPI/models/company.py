@@ -2,6 +2,7 @@ import uuid
 from pydantic import BaseModel, Field
 
 class Company(BaseModel):
+    code:str
     name:str
     description:str
     country:str

@@ -1,6 +1,6 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map, Observable } from 'rxjs';
+import { catchError, map, Observable, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -32,7 +32,8 @@ export class BaseService {
   }
 
   AddItem(url: string, item: any): Observable<any>{
-    return this.http.post<any>(url, item, this.httpHeaders);
+    return this.http.post<any>(url, item, this.httpHeaders).pipe(
+      catchError(this.handleError))
   }
 
   UpdateItem(url: string, item: any): Observable<any>{
@@ -40,4 +41,14 @@ export class BaseService {
     return this.http.put<any>(url, item, this.httpHeaders);
   }
 
+  private handleError(error: HttpErrorResponse) {
+    let errorMessage = '';
+    console.error("error: ", error, "error.error:", error.error);
+    console.error(error.error);
+    if (error.error && error.error.status !== 200) {
+      errorMessage = error.error.detail;
+    }
+    console.error(errorMessage);
+    return throwError(() => new Error(errorMessage));
+  }
 }

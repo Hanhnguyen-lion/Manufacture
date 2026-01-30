@@ -1,0 +1,4 @@
+.mat-mdc-row:hover {
+  background-color: #d7e3ff; /* Change to your desired hover color */
+  cursor: pointer;
+}

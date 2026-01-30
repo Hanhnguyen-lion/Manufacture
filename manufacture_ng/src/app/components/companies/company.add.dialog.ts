@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, signal } from '@angular/core';
 import { MatDialogContent, MatDialogActions, MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -8,6 +8,7 @@ import { BaseService } from '../../services/base-service';
 import { enviroment } from '../../enviroments/enviroment';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'company.add.dialog',
@@ -26,9 +27,11 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 })
 export class CompanyAddDialog implements OnInit {
   
-  isUpdating: boolean = false;
+  isUpdating = signal(false);
 
   form!: FormGroup;
+
+  errorMessage = signal("");
   
   companyItem!: CompanyItem;
 
@@ -43,8 +46,9 @@ export class CompanyAddDialog implements OnInit {
         }
 
   ngOnInit(): void {
-    this.isUpdating = false;
+    this.isUpdating.set(false);
     this.form = this.fb.group({
+            code: ["", Validators.required],
             name: ["", Validators.required],
             email: ["", Validators.email],
             country: [""],
@@ -60,15 +64,19 @@ export class CompanyAddDialog implements OnInit {
 
   save() {
     if (this.form.valid){
-      this.isUpdating = true;
+    this.isUpdating.set(true);
       this.companyItem = this.form.value;
       this.svc.AddItem(this.api_url, this.companyItem).
       subscribe({
-        next:()=>{
-          this.isUpdating = false;
+        next:(response)=>{
+          this.isUpdating.set(false);
           this.dialogRef.close();
+        },
+        error:(error)=>{
+          this.isUpdating.set(false);
+          this.errorMessage.set(error.message);
         }
-      })
+      });
     }
   }
 }
