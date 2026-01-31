@@ -44,7 +44,7 @@ export class DepartmentList implements OnInit, AfterViewInit {
 
   displayedColumns: string[] = ['name',
                                 'phone', 
-                                'company_id', 
+                                'company_name', 
                                 'actions'];
   dataSource = new MatTableDataSource();
 
@@ -85,6 +85,7 @@ export class DepartmentList implements OnInit, AfterViewInit {
   }
 
   edit(id: string) {
+    console.log(id);
     // const dialogConfig = new MatDialogConfig();
     // dialogConfig.disableClose = true;
     // dialogConfig.autoFocus = true;
