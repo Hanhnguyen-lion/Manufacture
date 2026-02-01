@@ -1,2 +1,88 @@
-<button matButton="elevated" (click)="openDialog('0ms', '0ms')">Open dialog without animation</button>
-<button matButton="elevated" (click)="openDialog('3000ms', '1500ms')">Open dialog slowly</button>
+<form [formGroup]="form">
+  <table mat-table [dataSource]="dataSource">
+
+    <!-- Position Column -->
+    <ng-container matColumnDef="position">
+      <th mat-header-cell *matHeaderCellDef> No. </th>
+      <td mat-cell *matCellDef="let row">
+        {{ row.get('position')?.value }}
+      </td>
+    </ng-container>
+
+    <!-- Name Column -->
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef> Name </th>
+      <td mat-cell *matCellDef="let row">
+        @if (!row.get('isEdit')?.value) {
+            <span>{{ row.get('name')?.value }}</span>
+        }
+        @else {
+          <mat-form-field>
+          <input matInput [formControl]="row.get('name')">
+          </mat-form-field>
+        }
+      </td>
+    </ng-container>
+
+    <!-- Weight Column -->
+    <ng-container matColumnDef="weight">
+      <th mat-header-cell *matHeaderCellDef> Weight </th>
+      <td mat-cell *matCellDef="let row">
+        @if(!row.get('isEdit')?.value){
+        <span >{{ row.get('weight')?.value }}</span>
+        }
+        @else {
+          <mat-form-field>
+          <input matInput type="number" [formControl]="row.get('weight')">
+          </mat-form-field>
+        }
+      </td>
+    </ng-container>
+
+    <!-- Symbol Column -->
+    <ng-container matColumnDef="symbol">
+      <th mat-header-cell *matHeaderCellDef> Symbol </th>
+      <td mat-cell *matCellDef="let row">
+        @if(!row.get('isEdit')?.value){
+            <span>{{ row.get('symbol')?.value }}</span>
+        }
+        @else {
+          <mat-form-field>
+            <input matInput [formControl]="row.get('symbol')">
+          </mat-form-field>
+        }
+      </td>
+    </ng-container>
+
+    <!-- Action Column -->
+    <ng-container matColumnDef="action">
+      <th mat-header-cell *matHeaderCellDef>
+        <button mat-icon-button color="primary" (click)="addNew()">
+            <mat-icon>add</mat-icon>
+            </button>
+        </th>
+      <td mat-cell *matCellDef="let row; let i = index">
+        @if (!row.get('isEdit')?.value) {
+          <button mat-icon-button (click)="toggleEditMode(row)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button (click)="deleteRow(i)" matTooltip="Delete">
+        <mat-icon>delete</mat-icon>
+      </button>
+        }
+        @else {
+          <button mat-icon-button (click)="saveRow(row)" [disabled]="row.invalid">
+            <mat-icon>save</mat-icon>
+          </button>
+          <button mat-icon-button (click)="cancelRow(row)">
+            <mat-icon>cancel</mat-icon>
+          </button>
+        }
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <!-- Iterate over the form array controls for the actual rows -->
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+</form>

@@ -5,7 +5,13 @@ import {
   OnInit, 
   signal, 
   ViewChild } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { 
+  FormArray, 
+  FormBuilder, 
+  FormGroup, 
+  FormsModule, 
+  ReactiveFormsModule, 
+  Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -17,11 +23,14 @@ import {
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { DepartmentItem } from '../../models/department';
 import { enviroment } from '../../enviroments/enviroment';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { BaseService } from '../../services/base-service';
+import { MatSelectModule } from '@angular/material/select';
+import { CompanyItem } from '../../models/company';
+import { AsyncPipe } from '@angular/common';
+
 
 @Component({
   selector: 'app-department.list',
@@ -33,22 +42,31 @@ import { BaseService } from '../../services/base-service';
     MatFormFieldModule,
     MatInputModule, 
     MatPaginatorModule,
+    MatSelectModule,
     FormsModule,
-    MatProgressSpinnerModule    
+    MatProgressSpinnerModule,
+    ReactiveFormsModule,
+    AsyncPipe  
   ],
   templateUrl: './department.list.html',
   styleUrl: './department.list.css',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
+
 export class DepartmentList implements OnInit, AfterViewInit {
 
   displayedColumns: string[] = ['name',
                                 'phone', 
                                 'company_name', 
                                 'actions'];
-  dataSource = new MatTableDataSource();
+  dataSource = new MatTableDataSource<any>();
+  form!: FormGroup;
+  errorMessage = signal("");
 
+  formArray!: FormArray;
+  
   private items!: Observable<DepartmentItem[]>;
+  companies!: Observable<CompanyItem[]>;
 
   private api_url:string = `${enviroment.apiUrl}/department`;
 
@@ -56,13 +74,19 @@ export class DepartmentList implements OnInit, AfterViewInit {
 
   constructor(
     private srv: BaseService,
-  ){}
+    private fb: FormBuilder
+  ){
+    this.form = this.fb.group({
+      tableRows: this.fb.array([])
+    });
+  }
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
   ngOnInit(){
     this.loading.set(false);
+    this.companies = this.srv.FindAllItems(`${enviroment.apiUrl}/company`);
     this.LoadData();
   }
 
@@ -71,7 +95,13 @@ export class DepartmentList implements OnInit, AfterViewInit {
     this.items = this.srv.FindAllItems(this.api_url);
 
     this.items.subscribe(data=>{
-      this.dataSource.data = data;
+      data.forEach(element=>{
+        this.addTableRow(element);
+      });
+
+      this.formArray = this.fb.array(data.map(item => this.createFormGroup(item)));
+      this.dataSource.data = this.tableRows.controls; // Bind the FormArray controls to the MatTableDataSource
+
       this.dataSource.sort = this.sort;
       this.dataSource.paginator = this.paginator;
       this.loading.set(false);
@@ -79,28 +109,90 @@ export class DepartmentList implements OnInit, AfterViewInit {
 
   }
 
+  get tableRows(): FormArray {
+    return this.form.get('tableRows') as FormArray;
+  }
+
+  addTableRow(data: DepartmentItem) {
+    const row = this.fb.group({
+      id: [data.id],
+      name: [data.name, Validators.required],
+      phone: [data.phone],
+      company_id: [data.company_id],
+      company_name: [data.company_name],
+      isEdit: [false] // Control the edit state of the row
+    });
+    this.tableRows.push(row);
+  }
+
+  saveRow(row: FormGroup) {
+    if (row.valid) {
+      this.loading.set(true);;
+      // Here you would typically call an API to save the data
+      console.log('Saving row:', row.value);
+      let item = row.value;
+      if (row.get("id")){
+
+        this.srv.UpdateItem(this.api_url, {
+          id: item.id,
+          name: item.name,
+          phone: item.phone,
+          company_id: item.company_id
+        }).
+        subscribe({
+          next:(response)=>{
+            if (response.status_code){
+              this.loading.set(false);
+              
+              this.errorMessage.set(response.detail);
+            }
+            else{
+              var company_id = response.company_id;
+              var item = this.companies.pipe(
+                map(items => items.find(
+                  (item) => item.id == company_id))
+              );
+              item?.subscribe({
+                next:(data:any)=>{
+                  //console.log("data.name: ", data.name);
+                  row.get('company_name')?.setValue(data.name);
+                  this.loading.set(false);
+                }
+              });
+              row.get('isEdit')?.patchValue(false);
+            }
+          }
+        });
+
+        //this.edit(row);
+
+      }
+      else{
+
+      }
+    }
+  }
+
+  // Function to cancel changes (reverts the form group to its initial state)
+  cancelRow(row: FormGroup) {
+    if (row.get("id")){
+      row.get('isEdit')?.patchValue(false);
+    }
+    else{
+      this.formArray.removeAt(this.formArray.length - 1);
+      this.dataSource.data = this.formArray.controls as FormGroup[];      
+    }
+    //this.edit(row);
+  }
+  
   ngAfterViewInit(){
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
   }
 
-  edit(id: string) {
-    console.log(id);
-    // const dialogConfig = new MatDialogConfig();
-    // dialogConfig.disableClose = true;
-    // dialogConfig.autoFocus = true;
-  
-    // let companyItem = this.srv.FindItemById(this.api_url, id);
-    // companyItem.subscribe(item =>{
-    //   dialogConfig.data = item;
+  edit(row: FormGroup) {
+    row.get('isEdit')?.setValue(!row.get('isEdit')?.value);
 
-    //   const dialogRef = this.dialog.open(CompanyEditDialog, dialogConfig);
-
-    //   dialogRef.afterClosed().subscribe(
-    //     () => this.LoadData()
-    //   );
-    // });
-  
   }
 
   delete(id: string) {
@@ -120,12 +212,27 @@ export class DepartmentList implements OnInit, AfterViewInit {
   }
 
   addNew(){
+    const newRow = this.createFormGroup(
+      { 
+        id:"",
+        name: "", 
+        phone: "", 
+        company_id: "",
+        company_name: "" 
+      });
+    newRow.get('isEdit')?.setValue(true); // Automatically open in edit mode
+    this.formArray.push(newRow);
+    this.dataSource.data = this.formArray.controls as FormGroup[];   
 
-    // const dialogRef = this.dialog.open(CompanyAddDialog);
+  }
 
-    // dialogRef.afterClosed().subscribe(
-    //   () => this.LoadData()
-    // );
+  createFormGroup(data: DepartmentItem): FormGroup {
+    return this.fb.group({
+      name: [data.name, Validators.required],
+      phone: [data.phone],
+      company_name: [data.company_name],
+      isEdit: [false] // Custom property to track edit state
+    });
   }
 
   applyFilter(event: Event) {

@@ -53,7 +53,9 @@
                placeholder="Description"
                formControlName="description"></textarea>
     </mat-form-field>
- 
+    @if(errorMessage()){
+        <div class="error-message">{{errorMessage()}}</div>
+    } 
 </mat-dialog-content>
 
 <mat-dialog-actions>
