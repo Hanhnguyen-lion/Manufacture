@@ -1,0 +1,11 @@
+<h2 mat-dialog-title>{{title}}</h2>
+<mat-dialog-content>
+  {{content}}
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button matButton (click)="close()" [disabled]="isDeleting()">No</button>
+  <button matButton (click)="save()" [disabled]="isDeleting()">Yes</button>
+  @if(isDeleting()){
+    <mat-spinner [diameter]="20"></mat-spinner>
+  }
+</mat-dialog-actions>

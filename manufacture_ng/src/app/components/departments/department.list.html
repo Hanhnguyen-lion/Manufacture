@@ -8,7 +8,7 @@
 }
 <form [formGroup]="form">
     <table mat-table [dataSource]="dataSource" 
-        matSort matSortActive="name" matSortDisableClear matSortDirection="asc"
+        matSort matSortActive="company_name" matSortDisableClear matSortDirection="asc"
         class="mat-elevation-z8">
 
         <ng-container matColumnDef="name">
@@ -62,7 +62,7 @@
 
         <ng-container matColumnDef="actions">
             <th mat-header-cell *matHeaderCellDef>
-            <button mat-icon-button color="primary" (click)="addNew()">
+            <button mat-icon-button (click)="addNew()">
                 <mat-icon>add</mat-icon>
                 </button>
             </th>
@@ -71,7 +71,7 @@
                     <button mat-icon-button (click)="edit(element)">
                         <mat-icon>edit</mat-icon>
                     </button>
-                    <button mat-icon-button (click)="delete(i)" matTooltip="Delete">
+                    <button mat-icon-button (click)="delete(element)" matTooltip="Delete">
                         <mat-icon>delete</mat-icon>
                     </button>
                 }

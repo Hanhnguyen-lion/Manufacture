@@ -6,6 +6,7 @@ import {
   signal, 
   ViewChild } from '@angular/core';
 import { 
+  AbstractControl,
   FormArray, 
   FormBuilder, 
   FormGroup, 
@@ -30,6 +31,11 @@ import { BaseService } from '../../services/base-service';
 import { MatSelectModule } from '@angular/material/select';
 import { CompanyItem } from '../../models/company';
 import { AsyncPipe } from '@angular/common';
+import { 
+  MatDialog, 
+  MatDialogConfig 
+} from '@angular/material/dialog';
+import { DeleteDialog } from '../dialog/delete.dialog';
 
 
 @Component({
@@ -74,7 +80,8 @@ export class DepartmentList implements OnInit, AfterViewInit {
 
   constructor(
     private srv: BaseService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private dialog: MatDialog
   ){
     this.form = this.fb.group({
       tableRows: this.fb.array([])
@@ -82,7 +89,7 @@ export class DepartmentList implements OnInit, AfterViewInit {
   }
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
-  @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild(MatSort, { static: true }) sort!: MatSort;
 
   ngOnInit(){
     this.loading.set(false);
@@ -101,9 +108,14 @@ export class DepartmentList implements OnInit, AfterViewInit {
 
       this.formArray = this.fb.array(data.map(item => this.createFormGroup(item)));
       this.dataSource.data = this.tableRows.controls; // Bind the FormArray controls to the MatTableDataSource
-
       this.dataSource.sort = this.sort;
       this.dataSource.paginator = this.paginator;
+
+      const filterPredicate = this.dataSource.filterPredicate;
+      this.dataSource.filterPredicate = (data: AbstractControl, filter) => {
+        return filterPredicate.call(this.dataSource, data.value, filter);
+      }
+
       this.loading.set(false);
     });
 
@@ -129,15 +141,16 @@ export class DepartmentList implements OnInit, AfterViewInit {
     if (row.valid) {
       this.loading.set(true);;
       // Here you would typically call an API to save the data
-      console.log('Saving row:', row.value);
+      //console.log('Saving row:', row.value);
       let item = row.value;
+      const company_id = item?.company_id??"";
       if (row.get("id")){
 
         this.srv.UpdateItem(this.api_url, {
           id: item.id,
           name: item.name,
           phone: item.phone,
-          company_id: item.company_id
+          company_id: company_id
         }).
         subscribe({
           next:(response)=>{
@@ -147,14 +160,13 @@ export class DepartmentList implements OnInit, AfterViewInit {
               this.errorMessage.set(response.detail);
             }
             else{
-              var company_id = response.company_id;
+              //var company_id = response.company_id;
               var item = this.companies.pipe(
                 map(items => items.find(
                   (item) => item.id == company_id))
               );
               item?.subscribe({
                 next:(data:any)=>{
-                  //console.log("data.name: ", data.name);
                   row.get('company_name')?.setValue(data.name);
                   this.loading.set(false);
                 }
@@ -163,12 +175,36 @@ export class DepartmentList implements OnInit, AfterViewInit {
             }
           }
         });
-
-        //this.edit(row);
-
       }
       else{
-
+        this.srv.AddItem(this.api_url, {
+          name: item.name,
+          phone: item.phone,
+          company_id: company_id
+        }).
+        subscribe({
+          next:(response)=>{
+            if (response.status_code){
+              this.loading.set(false);
+              
+              this.errorMessage.set(response.detail);
+            }
+            else{
+              row.get('id')?.setValue(response.id);
+              var item = this.companies.pipe(
+                map(items => items.find(
+                  (item) => item.id == company_id))
+              );
+              item?.subscribe({
+                next:(data:any)=>{
+                  row.get('company_name')?.setValue(data.name);
+                  this.loading.set(false);
+                }
+              });
+              row.get('isEdit')?.patchValue(false);
+            }
+          }
+        });
       }
     }
   }
@@ -188,41 +224,61 @@ export class DepartmentList implements OnInit, AfterViewInit {
   ngAfterViewInit(){
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
+    this.dataSource.sortingDataAccessor = (control: AbstractControl, sortHeaderId: string) => {
+      const value: any = control.value[sortHeaderId];
+      return typeof value === 'string' ? value.toLowerCase() : value;
+    };    
   }
 
   edit(row: FormGroup) {
     row.get('isEdit')?.setValue(!row.get('isEdit')?.value);
-
   }
 
-  delete(id: string) {
+  delete(row: FormGroup) {
+    let id = row.get("id")?.value;
+    let dialogConfig = new MatDialogConfig();
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+    dialogConfig.data = {
+        id: id,
+        title: "Delete Department",
+        content: "Are you sure delete this department ?",
+        api_url: this.api_url
+    };
 
-    // const dialogConfig = new MatDialogConfig();
-    // dialogConfig.disableClose = true;
-    // dialogConfig.autoFocus = true;
-    // dialogConfig.data = {
-    //     id: id
-    // };
+    const dialogRef = this.dialog.open(DeleteDialog, dialogConfig);
 
-    // const dialogRef = this.dialog.open(CompanyDeleteDialog, dialogConfig);
-
-    // dialogRef.afterClosed().subscribe(
-    //   () => this.LoadData()
-    // );
+    dialogRef.afterClosed().subscribe(
+      () => {
+        (this.form.get('tableRows') as FormArray).clear();
+        this.LoadData();
+      }
+    );
   }
 
   addNew(){
-    const newRow = this.createFormGroup(
-      { 
-        id:"",
-        name: "", 
-        phone: "", 
-        company_id: "",
-        company_name: "" 
-      });
-    newRow.get('isEdit')?.setValue(true); // Automatically open in edit mode
-    this.formArray.push(newRow);
-    this.dataSource.data = this.formArray.controls as FormGroup[];   
+
+    const row = this.fb.group({
+      name: ["", Validators.required],
+      phone: [""],
+      company_id: [""],
+      company_name: [""],
+      isEdit: [true] // Control the edit state of the row
+    });
+    this.tableRows.push(row);
+    this.dataSource.data = this.tableRows.controls;
+
+    // const newRow = this.createFormGroup(
+    //   { 
+    //     id:"",
+    //     name: "", 
+    //     phone: "", 
+    //     company_id: "",
+    //     company_name: ""
+    //   });
+    //  newRow.get('isEdit')?.setValue(true); // Automatically open in edit mode
+    //  this.formArray.push(newRow);
+     //this.dataSource.data = this.formArray.controls as FormGroup[];   
 
   }
 

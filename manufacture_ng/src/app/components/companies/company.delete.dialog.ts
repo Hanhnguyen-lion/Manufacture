@@ -25,7 +25,8 @@ import { BaseService } from "../../services/base-service";
     MatDialogActions, 
     MatDialogTitle, 
     MatDialogContent,
-    MatProgressSpinnerModule],
+    MatProgressSpinnerModule
+  ],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CompanyDeleteDialog {

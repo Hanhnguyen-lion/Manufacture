@@ -55,15 +55,15 @@ async def update_department(id: str, department:Department, request: Request):
                         detail=f"Department with ID {id} not found")
 
 @department.delete("/{id}")
-async def delete_department(id: str, request: Request, response: Response):
+async def delete_department(id: str, request: Request):
     
-    delete_result = departmentEntity(request.app.database.M_Department.delete_one({"_id": ObjectId(id)}))
+    delete_result = request.app.database.M_Department.delete_one({"_id": ObjectId(id)})
     
     if delete_result.deleted_count == 1:
-        response.status_code = status.HTTP_204_NO_CONTENT
-        return response
+        return HTTPException(status_code=status.HTTP_204_NO_CONTENT,
+                        detail=f"Department deleted fail");
     
-    raise HTTPException(status_code=status.HTTP_200_OK, 
+    return HTTPException(status_code=status.HTTP_200_OK, 
                        detail=f"Department deleted successfully")
 
 def get_departments(request: Request):
