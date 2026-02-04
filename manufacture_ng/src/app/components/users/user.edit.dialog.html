@@ -1,0 +1,158 @@
+<h2 mat-dialog-title>Edit a user</h2>
+<div class="example-container">
+    <mat-dialog-content [formGroup]="form" class="mat-typography">
+        @if (errorMessage()){
+            <mat-label class="error-message">{{errorMessage()}}</mat-label>
+        }
+        <div class="example-form-fields">
+            <mat-form-field>
+                <mat-label>First name</mat-label>
+                <input matInput
+                    placeholder="First name"
+                    formControlName="first_name">
+                    @if(isUpdating() && f["first_name"].errors){
+                        @if(f["first_name"].errors["required"]){
+                            <mat-error>Required field</mat-error>
+                        }
+                    }
+            </mat-form-field>
+            <mat-form-field>
+                <mat-label>Last name</mat-label>
+                <input matInput placeholder="Last name" 
+                formControlName="last_name">
+                    @if(isUpdating() && f["last_name"].errors){
+                        @if(f["last_name"].errors["required"]){
+                            <mat-error>Required field</mat-error>
+                        }
+                    }
+            </mat-form-field>
+        </div>
+        <div class="example-form-fields">
+            <mat-form-field>
+                <mat-label>Email</mat-label>
+                <input matInput
+                    placeholder="Email"
+                    formControlName="email">
+                    @if(isUpdating() && f["email"].errors){
+                        @if(f["email"].errors["required"]){
+                            <mat-error>Required field</mat-error>
+                        }
+                        @if(f["email"].errors["email"]){
+                            <mat-error>Invalid field</mat-error>
+                        }
+                    }
+            </mat-form-field>
+            <mat-form-field>
+                <mat-label>Date of birth</mat-label>
+                <input matInput [matDatepicker]="picker_date_of_birth" 
+                    formControlName="dob">
+                <mat-hint>MM/DD/YYYY</mat-hint>
+                <mat-datepicker-toggle matIconSuffix [for]="picker_date_of_birth"></mat-datepicker-toggle>
+                <mat-datepicker #picker_date_of_birth></mat-datepicker>
+            </mat-form-field>
+        </div>
+        <div class="example-form-fields">
+            <mat-form-field>
+                <mat-label>Password</mat-label>
+                <input matInput type="password"
+                    placeholder="Password"
+                    formControlName="password">
+                    @if(isUpdating() && f["password"].errors){
+                        @if(f["password"].errors["required"]){
+                            <mat-error>Required field</mat-error>
+                        }
+                    }
+            </mat-form-field>
+            <mat-form-field>
+                <mat-label>Confirm password</mat-label>
+                <input matInput type="password"
+                    placeholder="Confirm password"
+                    formControlName="confirm_password">
+                    @if(isUpdating() && f["confirm_password"].errors){
+                        @if(f["confirm_password"].errors["required"]){
+                            <mat-error>Required field</mat-error>
+                        }
+                        @if (f["confirm_password"].errors["mustMatch"]) {
+                            <mat-error>Passwords must match</mat-error>
+                        }
+                    }
+            </mat-form-field>
+        </div>
+        <div class="example-form-fields">
+            <mat-form-field>
+                <mat-label>Phone</mat-label>
+                <input matInput
+                    placeholder="Phone"
+                    formControlName="phone">
+            </mat-form-field>
+            <mat-form-field>
+                <mat-label>Gender</mat-label>
+                <mat-select formControlName="gender">
+                    <mat-option value="Male">Male</mat-option>
+                    <mat-option value="Female">Female</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div class="example-form-fields">
+            <mat-form-field>
+                <mat-label>Role</mat-label>
+                <mat-select formControlName="role">
+                    @for (item of roles; track item) {
+                        <mat-option [value]="item">{{item}}</mat-option>
+                    }
+                    @if(isUpdating() && f["role"].errors){
+                        @if(f["role"].errors["required"]){
+                            <mat-error>Required field</mat-error>
+                        }
+                    }
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field>
+                <mat-label>Account type</mat-label>
+                <mat-select formControlName="account_type">
+                    @for (item of account_types; track item) {
+                        <mat-option [value]="item">{{item}}</mat-option>
+                    }
+                    @if(isUpdating() && f["account_type"].errors){
+                        @if(f["account_type"].errors["required"]){
+                            <mat-error>Required field</mat-error>
+                        }
+                    }
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div>
+            <mat-form-field class="container-mat-form-field">
+                <mat-label>Company</mat-label>
+                <mat-select formControlName="company_id">
+                    @for (item of companyItems|async; track $index) {
+                        <mat-option [value]="item.id">
+                            {{item.name}}
+                        </mat-option>
+                    }
+                </mat-select>
+                @if(isUpdating() && f["company_id"].errors){
+                    @if(f["company_id"].errors["required"]){
+                        <mat-error>Required field</mat-error>
+                    }
+                }
+            </mat-form-field>
+        </div>
+        <div>
+            <mat-form-field class="container-mat-form-field">
+                <mat-label>Address</mat-label>
+                <textarea matInput placeholder="Address" 
+                    formControlName="address"></textarea>
+            </mat-form-field>
+        </div>
+    </mat-dialog-content>
+
+    <mat-dialog-actions>
+        <button matButton (click)="close()" [disabled]="isUpdating()">Cancel</button>
+        <button matButton (click)="save()" [disabled]="isUpdating()">Save</button>
+        @if(isUpdating()){
+            <mat-spinner [diameter]="20"></mat-spinner>
+        }
+
+    </mat-dialog-actions>
+</div>
