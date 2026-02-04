@@ -1,6 +1,5 @@
 <h2>Department List</h2>
-<mat-form-field>
-  <mat-label>Filter</mat-label>
+<mat-form-field class="custom-mat-mdc-form-field">
   <input matInput (keyup)="applyFilter($event)" placeholder="filter department" #input>
 </mat-form-field>
 @if (loading()) {
@@ -18,9 +17,9 @@
                     <span>{{ element.get('name')?.value }}</span>
                 }
                 @else {
-                <mat-form-field>
-                    <input matInput [formControl]="element.get('name')">
-                </mat-form-field>
+                    <mat-form-field appearance="fill" class="custom-form-field" subscriptSizing="dynamic">
+                        <input matInput [formControl]="element.get('name')">
+                    </mat-form-field>
                 }
             </td>
         </ng-container>
@@ -32,7 +31,7 @@
                     <span>{{ element.get('phone')?.value }}</span>
                 }
                 @else {
-                    <mat-form-field>
+                    <mat-form-field subscriptSizing="dynamic">
                         <input matInput [formControl]="element.get('phone')">
                     </mat-form-field>
                 }
@@ -46,17 +45,17 @@
                     <span>{{ element.get('company_name')?.value }}</span>
                 }
                 @else {
-                    <mat-form-field>
-                        <mat-label>Company</mat-label>
-                            <mat-select [formControl]="element.get('company_id')" name="company">
-                                @for (item of companies | async; track $index) {
-                                    <mat-option [value]="item.id">
-                                        {{item.name}}
-                                    </mat-option>
-                                }
-                            </mat-select>
+                    <mat-form-field subscriptSizing="dynamic">
+                        <mat-select [formControl]="element.get('company_id')" name="company">
+                            @for (item of companies | async; track $index) {
+                                <mat-option [value]="item.id">
+                                    {{item.name}}
+                                </mat-option>
+                            }
+                        </mat-select>
                     </mat-form-field>
                 }
+
             </td>
         </ng-container>
 

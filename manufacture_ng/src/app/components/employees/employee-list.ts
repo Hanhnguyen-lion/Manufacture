@@ -1,6 +1,12 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import 
+{ 
+  AfterViewInit, 
+  Component, 
+  OnInit, 
+  signal, 
+  ViewChild 
+} from '@angular/core';
 import { EmployeeItem } from '../../models/employee';
-import { DatePipe } from '@angular/common';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
@@ -11,13 +17,22 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { BaseService } from '../../services/base-service';
 import { Observable } from 'rxjs';
 import { enviroment } from '../../enviroments/enviroment';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { DeleteDialog } from '../dialog/delete.dialog';
+import { EmployeeEditDialog } from './employee.edit.dialog';
+import { EmployeeAddDialog } from './employee.add.dialog';
 
 
 @Component({
   selector: 'app-employee-list',
-  imports: [DatePipe, MatSortModule, MatTableModule,
-            MatIconModule, MatButtonModule, MatFormFieldModule,
-            MatInputModule, MatPaginatorModule
+  imports: [
+            MatSortModule, 
+            MatTableModule,
+            MatIconModule, 
+            MatButtonModule, 
+            MatFormFieldModule,
+            MatInputModule, 
+            MatPaginatorModule
   ],
   templateUrl: './employee-list.html',
   styleUrl: './employee-list.css',
@@ -25,15 +40,24 @@ import { enviroment } from '../../enviroments/enviroment';
 
 export class EmployeeList implements OnInit, AfterViewInit {
 
-  displayedColumns: string[] = ['id', 'name', 'job_title', 'date_of_birth', 'hire_date', 'actions'];
-  dataSource = new MatTableDataSource<EmployeeItem>();
+  displayedColumns: string[] = [
+    'code', 
+    'name', 
+    'job_title', 
+    'department_name', 
+    'company_name', 
+    'actions'];
+  dataSource = new MatTableDataSource<any>();
 
   private employees!: Observable<EmployeeItem[]>;
    
   private api_url:string = `${enviroment.apiUrl}/employee`;
 
+  loading = signal(false);
+
   constructor(
     private srv: BaseService,
+    private dialog: MatDialog
   ){}
 
 
@@ -41,6 +65,7 @@ export class EmployeeList implements OnInit, AfterViewInit {
   @ViewChild(MatSort) sort!: MatSort;
 
   ngOnInit(){
+    this.loading.set(false);
     this.FindAllEmployees();
   }
 
@@ -50,6 +75,7 @@ export class EmployeeList implements OnInit, AfterViewInit {
       this.dataSource.data = items;
       this.dataSource.sort = this.sort;
       this.dataSource.paginator = this.paginator;
+      this.loading.set(false);
     })
   }
 
@@ -58,13 +84,57 @@ export class EmployeeList implements OnInit, AfterViewInit {
     this.dataSource.sort = this.sort;
   }
   
-  startEdit(i: number, id: number, last_name: string, first_name: string, dob: Date) {
+  startEdit(id: string) {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+    dialogConfig.width = "600px";
+  
+    let companyItem = this.srv.FindItemById(this.api_url, id);
+    companyItem.subscribe(item =>{
+      dialogConfig.data = item;
+
+      const dialogRef = this.dialog.open(
+        EmployeeEditDialog, 
+        dialogConfig);
+
+      dialogRef.afterClosed().subscribe(
+        () => this.FindAllEmployees()
+      );
+    });
   }
 
-  deleteItem(i: number, id: number, last_name: string, first_name: string, dob: Date) {
+  deleteItem(id: string) {
+    let dialogConfig = new MatDialogConfig();
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+    dialogConfig.data = {
+        id: id,
+        title: "Delete Employee",
+        content: "Are you sure delete this Employee ?",
+        api_url: this.api_url
+    };
+
+    const dialogRef = this.dialog.open(DeleteDialog, dialogConfig);
+
+    dialogRef.afterClosed().subscribe(
+      () => {
+        this.FindAllEmployees();
+      }
+    );
   }
 
   addNew(){
+
+    const dialogRef = this.dialog.open(EmployeeAddDialog,
+      {
+        width: "600px"
+      }
+    );
+
+    dialogRef.afterClosed().subscribe(
+      () => this.FindAllEmployees()
+    );
 
   }
   applyFilter(event: Event) {

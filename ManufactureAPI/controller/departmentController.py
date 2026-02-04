@@ -1,7 +1,7 @@
-from fastapi import APIRouter, HTTPException, status, Request, Response
+from fastapi import APIRouter, HTTPException, status, Request
 
 from models.department import Department
-from schemas.department import departmentEntity, departmentsEntity
+from schemas.department import departmentEntity, departmentsCompanyEntity
 from bson import ObjectId
 
 M_Department: str = "M_Department"
@@ -20,7 +20,7 @@ async def create_department(department:Department, request: Request):
 
 @department.get("/")
 async def find_all_departments(request: Request):
-    return departmentsEntity(get_departments(request))
+    return departmentsCompanyEntity(get_departments(request))
 
 # @department.get("/department_list")
 # async def get_department_list(request: Request):

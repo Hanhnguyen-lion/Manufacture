@@ -1,71 +1,83 @@
 <h2 mat-dialog-title>Add a company</h2>
-<mat-dialog-content [formGroup]="form">
-      @if (errorMessage()){
-        <mat-label class="error-message">{{errorMessage()}}</mat-label>
-    }
+<div class="example-container">
+    <mat-dialog-content [formGroup]="form">
+        <div class="example-form-fields">
+            <mat-form-field>
+                <mat-label>Code</mat-label>
+                <input matInput
+                    placeholder="Code"
+                    formControlName="code">
+                    @if(isUpdating() && f["code"].errors){
+                        @if(f["code"].errors["required"]){
+                            <mat-error>Required field</mat-error>
+                        }
+                    }
+            </mat-form-field>
+            <mat-form-field>
+                <mat-label>Name</mat-label>
+                <input matInput placeholder="Name" formControlName="name">
+                    @if(isUpdating() && f["name"].errors){
+                        @if(f["name"].errors["required"]){
+                            <mat-error>Required field</mat-error>
+                        }
+                    }
+            </mat-form-field>
+        </div>
+        <div class="example-form-fields">
+            <mat-form-field>
+                <mat-label>Country</mat-label>
+                <input matInput
+                    placeholder="Country"
+                    formControlName="country">
+            </mat-form-field>
+            <mat-form-field>
+                <mat-label>Phone</mat-label>
+            <input matInput
+                placeholder="Phone"
+                formControlName="phone">
+            </mat-form-field>
+        </div>
+        <div>
+            <mat-form-field class="container-mat-form-field">
+                <mat-label>Email</mat-label>
+                <input matInput
+                    placeholder="Email"
+                    formControlName="email">
+                @if(isUpdating() && f["email"].errors){
+                    @if(f["email"].errors["email"]){
+                        <mat-error>Invalid field</mat-error>
+                    }
+                }
+            </mat-form-field>
+        </div>
+            <div>
+            <mat-form-field class="container-mat-form-field">
+                <mat-label>Address</mat-label>
+                <textarea matInput
+                    placeholder="Address"
+                    formControlName="address"></textarea>
+            </mat-form-field>
+        </div>
+        <div>
+            <mat-form-field class="container-mat-form-field">
+                <mat-label>Description</mat-label>
+                <textarea matInput
+                    placeholder="Description"
+                    formControlName="description"></textarea>
+            </mat-form-field>
+        </div>
+        @if(errorMessage()){
+            <div class="error-message">{{errorMessage()}}</div>
+        } 
+    </mat-dialog-content>
 
-    <mat-form-field>
-        <input matInput
-               placeholder="Code"
-               formControlName="code">
-            <mat-error>
-            @if(f["code"].errors){
-                Required field
-            }
-            @if(errorMessage()){
-               ERROR
-            }
-            </mat-error>
-</mat-form-field>
-  
-    <mat-form-field>
-        <input matInput
-               placeholder="Name"
-               formControlName="name">
-        @if(f["name"].errors){
-            <mat-error>Required field</mat-error>
+    <mat-dialog-actions>
+        <button matButton (click)="close()" [disabled]="isUpdating()">Cancel</button>
+        <button matButton (click)="save()" [disabled]="isUpdating()">Save</button>
+        @if(isUpdating()){
+            <mat-spinner [diameter]="20"></mat-spinner>
         }
-    </mat-form-field>
-  
-    <mat-form-field>
-        <input matInput
-               placeholder="Email"
-               formControlName="email">
-        @if(f["email"].errors){
-            <mat-error>Invalid field</mat-error>
-        }
-    </mat-form-field>
-  
-    <mat-form-field>
-        <input matInput
-               placeholder="Country"
-               formControlName="country">
-    </mat-form-field>
-  
-    <mat-form-field>
-        <input matInput
-               placeholder="Phone"
-               formControlName="phone">
-    </mat-form-field>
-  
-    <mat-form-field>
-        <textarea matInput
-               placeholder="Address"
-               formControlName="address"></textarea>
-    </mat-form-field>
-  
-    <mat-form-field>
-        <textarea matInput
-               placeholder="Description"
-               formControlName="description"></textarea>
-    </mat-form-field>
-</mat-dialog-content>
 
-<mat-dialog-actions>
-    <button matButton (click)="close()" [disabled]="isUpdating()">Cancel</button>
-    <button matButton (click)="save()" [disabled]="isUpdating()">Save</button>
-    @if(isUpdating()){
-        <mat-spinner [diameter]="20"></mat-spinner>
-    }
+    </mat-dialog-actions>
+</div>
 
-</mat-dialog-actions>

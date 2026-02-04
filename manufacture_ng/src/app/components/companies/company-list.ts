@@ -2,8 +2,6 @@ import {
   AfterViewInit, 
   ChangeDetectionStrategy, 
   Component, 
-  Inject, 
-  inject, 
   OnInit, 
   signal, 
   ViewChild 
@@ -24,19 +22,13 @@ import {
   ReactiveFormsModule
 } from '@angular/forms';
 import { 
-  MAT_DIALOG_DATA, 
   MatDialog, 
-  MatDialogActions, 
   MatDialogConfig, 
-  MatDialogContent, 
-  MatDialogModule, 
-  MatDialogRef, 
-  MatDialogTitle 
 } from '@angular/material/dialog';
 import { CompanyEditDialog } from './company.edit.dialog';
 import { MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { CompanyAddDialog } from './company.add.dialog';
-import { CompanyDeleteDialog } from './company.delete.dialog';
+import { DeleteDialog } from '../dialog/delete.dialog';
 
 @Component({
   selector: 'app-company-list',
@@ -93,7 +85,7 @@ export class CompanyList implements OnInit, AfterViewInit {
       this.dataSource.data = items;
       this.dataSource.sort = this.sort;
       this.dataSource.paginator = this.paginator;
-    this.loading.set(false);
+      this.loading.set(false);
     });
 
   }
@@ -108,6 +100,7 @@ export class CompanyList implements OnInit, AfterViewInit {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
+    dialogConfig.width = "600px";
   
     let companyItem = this.srv.FindItemById(this.api_url, id);
     companyItem.subscribe(item =>{
@@ -129,10 +122,12 @@ export class CompanyList implements OnInit, AfterViewInit {
     dialogConfig.autoFocus = true;
     dialogConfig.data = {
         id: id,
-        title: 'Delete Company'
+        title: "Delete Company",
+        content: "Are you sure delete this Company ?",
+        api_url: this.api_url
     };
 
-    const dialogRef = this.dialog.open(CompanyDeleteDialog, dialogConfig);
+    const dialogRef = this.dialog.open(DeleteDialog, dialogConfig);
 
     dialogRef.afterClosed().subscribe(
       () => this.FindAllCompanies()

@@ -36,6 +36,7 @@ import {
   MatDialogConfig 
 } from '@angular/material/dialog';
 import { DeleteDialog } from '../dialog/delete.dialog';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 
 @Component({
@@ -70,7 +71,6 @@ export class DepartmentList implements OnInit, AfterViewInit {
   errorMessage = signal("");
 
   formArray!: FormArray;
-  
   private items!: Observable<DepartmentItem[]>;
   companies!: Observable<CompanyItem[]>;
 

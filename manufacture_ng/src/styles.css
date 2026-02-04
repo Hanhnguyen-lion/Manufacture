@@ -12,10 +12,15 @@ table {
   width: 100%;
 }
 
-.mat-mdc-form-field {
-  font-size: 14px;
+.custom-mat-mdc-form-field {
   width: 100%;
+  font-size: 10px;
 }
+/* 
+.mat-mdc-form-field {
+  font-size: 12px;
+} */
+
 .error-message {
   color: #dc3545;
 }

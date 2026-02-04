@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Request, Response, status
 
 from models.company import Company
-from schemas.company import companiesEntity, CompanyEntity
+from schemas.company import companiesDepartemntEntity, companiesEntity, CompanyEntity
 from bson import ObjectId
 
 M_Company: str = "M_Company"
@@ -27,9 +27,14 @@ async def create_company(company:Company, request: Request):
     return HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                         detail=f"Company inserted fail")   
 
+
 @company.get("/")
 async def find_all_companies(request: Request):
     return companiesEntity(request.app.database.M_Company.find(limit=100))
+
+@company.get("/companies_departments")
+async def get_companies_departments(request: Request):
+    return companiesDepartemntEntity(get_company_departments(request))
 
 @company.get("/{id}")
 async def find_one_company(id: str, request:Request):
@@ -77,3 +82,18 @@ async def delete_company(id: str, request: Request):
     
     return HTTPException(status_code=status.HTTP_200_OK,
                         detail=f"Company deleted successfully");
+
+def get_company_departments(request: Request):
+
+    results = request.app.database['M_Company'].aggregate([
+        { "$lookup": {
+            "from": "M_Department",
+            "let": { "id": "$_id" },
+            "pipeline": [
+            { "$match": { "$expr": { "$eq": [{ "$toString": "$$id" }, "$company_id"] }}}
+            ],
+            "as": "department_details"
+        }}
+        ])
+
+    return list(results)    

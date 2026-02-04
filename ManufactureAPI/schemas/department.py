@@ -16,4 +16,8 @@ def departmentCompanyEntity(item) -> dict:
     }
 
 def departmentsEntity(entity) -> list:
+    return [departmentEntity(item) for item in entity]
+
+
+def departmentsCompanyEntity(entity) -> list:
     return [departmentCompanyEntity(item) for item in entity]

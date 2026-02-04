@@ -1,14 +1,24 @@
-import { Component, Inject, OnInit, signal } from '@angular/core';
-import { MatDialogContent, MatDialogActions, MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Component, OnInit, signal } from '@angular/core';
+import { 
+  MatDialogContent, 
+  MatDialogActions, 
+  MatDialogModule, 
+  MatDialogRef
+} from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { 
+  FormBuilder, 
+  FormGroup, 
+  FormsModule, 
+  ReactiveFormsModule, 
+  Validators 
+} from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { CompanyItem } from '../../models/company';
 import { BaseService } from '../../services/base-service';
 import { enviroment } from '../../enviroments/enviroment';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'company.add.dialog',
@@ -23,7 +33,7 @@ import { HttpErrorResponse } from '@angular/common/http';
     MatInputModule,
     MatProgressSpinnerModule],
   templateUrl: './company.add.dialog.html',
-  styleUrl: './company.add.dialog.css'
+  styleUrl: './company.edit.dialog.css'
 })
 export class CompanyAddDialog implements OnInit {
   

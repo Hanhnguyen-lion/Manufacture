@@ -1,16 +1,16 @@
 <h2>Employee List</h2>
-<mat-form-field>
+<mat-form-field class="custom-mat-mdc-form-field">
   <mat-label>Filter</mat-label>
   <input matInput (keyup)="applyFilter($event)" placeholder="filter employee" #input>
 </mat-form-field>
 
 <table mat-table [dataSource]="dataSource" 
-  matSort matSortActive="dob" matSortDisableClear matSortDirection="desc"
+  matSort matSortActive="name" matSortDisableClear matSortDirection="asc"
   class="mat-elevation-z8">
 
-  <ng-container matColumnDef="id">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by id"> Id </th>
-    <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+  <ng-container matColumnDef="code">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by code"> Code </th>
+    <td mat-cell *matCellDef="let element"> {{element.code}} </td>
   </ng-container>
 
   <!-- Name Column -->
@@ -24,14 +24,14 @@
     <td mat-cell *matCellDef="let element"> {{element.job_title}} </td>
   </ng-container>
 
-  <ng-container matColumnDef="date_of_birth">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by date of birth"> Date of birth </th>
-    <td mat-cell *matCellDef="let element"> {{element.date_of_birth | date:"MM/dd/yyyy"}} </td>
+  <ng-container matColumnDef="department_name">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by department"> Department </th>
+    <td mat-cell *matCellDef="let element"> {{element.department_name}} </td>
   </ng-container>
 
-  <ng-container matColumnDef="hire_date">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by hire date"> Hire Date </th>
-    <td mat-cell *matCellDef="let element"> {{element.hire_date | date:"MM/dd/yyyy"}} </td>
+  <ng-container matColumnDef="company_name">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by company"> Company </th>
+    <td mat-cell *matCellDef="let element"> {{element.company_name}} </td>
   </ng-container>
 
   <ng-container matColumnDef="actions">
@@ -40,12 +40,12 @@
           <mat-icon aria-label="Example icon-button with a heart icon">add</mat-icon>
         </button>
     </th>
-    <td mat-cell *matCellDef="let element;let i=index;">
-        <button mat-icon-button color="primary" (click)="startEdit(i, element.id, element.last_name, element.first_name, element.dob)">
+    <td mat-cell *matCellDef="let element;">
+        <button mat-icon-button (click)="startEdit(element.id)">
           <mat-icon aria-label="Edit">edit</mat-icon>
         </button>
 
-        <button mat-icon-button color="primary" (click)="deleteItem(i, element.id, element.last_name, element.first_name, element.dob)">
+        <button mat-icon-button (click)="deleteItem(element.id)">
           <mat-icon aria-label="Delete">delete</mat-icon>
         </button>
     </td>
