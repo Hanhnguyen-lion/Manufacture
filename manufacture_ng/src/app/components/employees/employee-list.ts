@@ -73,14 +73,12 @@ export class EmployeeList implements OnInit, AfterViewInit {
 
   FindAllEmployees(){
     
-    this.employees = this.srv.FindAllItems(this.api_url);
-    if (this.authService.userValue && this.authService.userValue.role != "Super Admin"){
-      this.employees = this.employees.pipe(
-        map((arr: any[]) =>{
-          return arr.filter((item)=> item.company_id == this.authService.userValue?.company_id)
-        })
-      )
+    if (this.authService.isUser){
+      const url = `${this.api_url}/employees_company/${this.authService.currentCompanyId}`;
+      this.employees = this.srv.FindAllItems(url);
     }
+    else
+      this.employees = this.srv.FindAllItems(this.api_url);
 
     this.employees.subscribe(items=>{
       this.dataSource.data = items;

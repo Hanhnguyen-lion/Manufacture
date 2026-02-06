@@ -30,7 +30,6 @@ export class AuthService {
     const url = `${enviroment.apiUrl}/user/Authenticate`;
     return this.http.post<any>(url, credentials).pipe(
           map(response => {
-            console.log("response:", response);
             if (response.status_code == 200) {
               this.userItemSubject.next(response.detail);
             }
@@ -46,5 +45,23 @@ export class AuthService {
 
   public get userValue(): UserItem | null{
     return this.userItemSubject.value;
+  }
+
+  public get isUser(): boolean{
+    if (this.userValue && this.userValue.role != "Super Admin")
+      return true;
+    return false;
+  }
+
+  public get isSuperAdmin(): boolean{
+    if (this.userValue && this.userValue.role == "Super Admin")
+      return true;
+    return false;
+  }
+
+  public get currentCompanyId(): string | null{
+    if (this.userValue)
+      return this.userValue.company_id;
+    return null;
   }
 }

@@ -96,8 +96,8 @@ export class DepartmentList implements OnInit, AfterViewInit {
   ngOnInit(){
     this.loading.set(false);
     let url = `${enviroment.apiUrl}/company`;
-    if (this.authService.userValue && this.authService.userValue.role != "Super Admin"){
-      this.companies = this.srv.FindAllItems(`${url}/companies/${this.authService.userValue?.company_id}`);
+    if (this.authService.isUser){
+      this.companies = this.srv.FindAllItems(`${url}/companies/${this.authService.currentCompanyId}`);
     }
     else{
       this.companies = this.srv.FindAllItems(url);

@@ -31,6 +31,11 @@ async def create_employee(employee:Employee, request: Request):
 async def find_all_employees(request: Request):
     return employeesDepartmentEntity(get_employees(request=request))
 
+@employee_router.get("/employees_company/{company_id}")
+async def get_employees_company(request: Request, company_id: str):
+    items = [li for li in get_employees(request) if li["company_id"] == company_id]
+    return employeesDepartmentEntity(items)
+
 @employee_router.get("/{id}")
 async def find_one_employee(id: str, request: Request):
     

@@ -78,8 +78,8 @@ export class EmployeeAddDialog implements OnInit {
   ngOnInit(): void {
     this.isUpdating.set(false);
     let url = `${enviroment.apiUrl}/company/companies_departments`;
-    if (this.authService.userValue && this.authService.userValue.role != "Super Admin"){
-      this.companyItems = this.svc.FindAllItems(`${url}/${this.authService.userValue?.company_id}`);
+    if (this.authService.isUser){
+      this.companyItems = this.svc.FindAllItems(`${url}/${this.authService.currentCompanyId}`);
     }
     else{
       this.companyItems = this.svc.FindAllItems(url);

@@ -32,10 +32,7 @@ export class App{
   }
   
   isSuperAdmin(){
-    if (this.authService.userValue && this.authService.userValue.role == "Super Admin"){
-      return true;
-    }
-    return false;
+    return this.authService.isSuperAdmin;
   }
 
   logout(){
