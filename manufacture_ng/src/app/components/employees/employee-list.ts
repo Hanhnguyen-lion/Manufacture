@@ -15,12 +15,13 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { BaseService } from '../../services/base-service';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { enviroment } from '../../enviroments/enviroment';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { DeleteDialog } from '../dialog/delete.dialog';
 import { EmployeeEditDialog } from './employee.edit.dialog';
 import { EmployeeAddDialog } from './employee.add.dialog';
+import { AuthService } from '../../services/auth.service';
 
 
 @Component({
@@ -57,7 +58,8 @@ export class EmployeeList implements OnInit, AfterViewInit {
 
   constructor(
     private srv: BaseService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private authService: AuthService
   ){}
 
 
@@ -70,7 +72,16 @@ export class EmployeeList implements OnInit, AfterViewInit {
   }
 
   FindAllEmployees(){
+    
     this.employees = this.srv.FindAllItems(this.api_url);
+    if (this.authService.userValue && this.authService.userValue.role != "Super Admin"){
+      this.employees = this.employees.pipe(
+        map((arr: any[]) =>{
+          return arr.filter((item)=> item.company_id == this.authService.userValue?.company_id)
+        })
+      )
+    }
+
     this.employees.subscribe(items=>{
       this.dataSource.data = items;
       this.dataSource.sort = this.sort;

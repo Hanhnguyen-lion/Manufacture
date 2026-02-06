@@ -28,6 +28,7 @@ import { AsyncPipe } from '@angular/common';
 import { DepartmentItem } from '../../models/department';
 import { map, Observable } from 'rxjs';
 import { EmployeeItem } from '../../models/employee';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-employee.edit.dialog',
@@ -76,6 +77,7 @@ export class EmployeeEditDialog implements OnInit {
 
   constructor(
         private svc: BaseService,
+        private authService: AuthService,
         private fb: FormBuilder,
         private dialogRef: MatDialogRef<EmployeeEditDialog>,
         @Inject(MAT_DIALOG_DATA) public data: any) { 
@@ -88,9 +90,14 @@ export class EmployeeEditDialog implements OnInit {
 
     var company_id = this.employeeItem.company_id;
 
-    const url = `${enviroment.apiUrl}/company/companies_departments`;
     var company_id = this.employeeItem.company_id;
-    this.companyItems = this.svc.FindAllItems(url);
+    let url = `${enviroment.apiUrl}/company/companies_departments`;
+    if (this.authService.userValue && this.authService.userValue.role != "Super Admin"){
+      this.companyItems = this.svc.FindAllItems(`${url}/${this.authService.userValue?.company_id}`);
+    }
+    else{
+      this.companyItems = this.svc.FindAllItems(url);
+    }
 
     this.updateDepartment(company_id);
 

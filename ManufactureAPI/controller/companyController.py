@@ -32,9 +32,20 @@ async def create_company(company:Company, request: Request):
 async def find_all_companies(request: Request):
     return companiesEntity(request.app.database.M_Company.find(limit=100))
 
+@company.get("/companies/{id}")
+async def find_companies(request: Request, id: str):
+    return companiesEntity(request.app.database.M_Company.find({
+        "_id": ObjectId(id)
+    }))
+
 @company.get("/companies_departments")
 async def get_companies_departments(request: Request):
     return companiesDepartemntEntity(get_company_departments(request))
+
+@company.get("/companies_departments/{company_id}")
+async def get_companies(request: Request, company_id: str):
+    company = [li for li in get_company_departments(request) if li["_id"] == ObjectId(company_id)]
+    return companiesDepartemntEntity(company)
 
 @company.get("/{id}")
 async def find_one_company(id: str, request:Request):

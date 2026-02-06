@@ -1,38 +1,42 @@
-<mat-toolbar>
-  <span class="fill-remaining-space">
-    <button mat-icon-button [matMenuTriggerFor]="menu" #menuTrigger="matMenuTrigger" (mouseover)="menuTrigger.openMenu()">
-      <mat-icon>menu</mat-icon>
+  <mat-toolbar>
+  @if (isAuthenticate()) {
+    <span class="fill-remaining-space">
+      <button mat-icon-button [matMenuTriggerFor]="menu" #menuTrigger="matMenuTrigger" (mouseover)="menuTrigger.openMenu()">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu" [overlapTrigger]="false">
+      <span (mouseleave)="menuTrigger.closeMenu()">
+        <button mat-menu-item routerLink="/">
+          <mat-icon>home</mat-icon>
+          <span>Home</span>
     </button>
-    <mat-menu #menu="matMenu" [overlapTrigger]="false">
-    <span (mouseleave)="menuTrigger.closeMenu()">
-      <button mat-menu-item>
-        <mat-icon>home</mat-icon>
-        <span>Home</span>
-  </button>
-  <button mat-menu-item routerLink="/Company">
-        <mat-icon>category</mat-icon>
-        <span>Company</span>
-      </button>
-  <button mat-menu-item routerLink="/Department">
-        <mat-icon>category</mat-icon>
-        <span>Department</span>
-      </button>
-  <button mat-menu-item routerLink="/Employee">
-        <mat-icon>personapron</mat-icon>
-        <span>Employee</span>
-      </button>
-  <button mat-menu-item routerLink="/User">
-        <mat-icon>personapron</mat-icon>
-        <span>User</span>
-      </button>
-  <button mat-menu-item>
-        <mat-icon>exit_to_app</mat-icon>
-        <span>Logout</span>
-      </button>
-  </span>
-  </mat-menu>
-  </span>
-  <span class="fill-remaining-space">Manufacture</span>
-</mat-toolbar>
+    @if (isSuperAdmin()){
+      <button mat-menu-item routerLink="/User">
+            <mat-icon>personapron</mat-icon>
+            <span>User</span>
+          </button>
+      <button mat-menu-item routerLink="/Company">
+            <mat-icon>category</mat-icon>
+            <span>Company</span>
+          </button>
+    }
+    <button mat-menu-item routerLink="/Department">
+          <mat-icon>category</mat-icon>
+          <span>Department</span>
+        </button>
+    <button mat-menu-item routerLink="/Employee">
+          <mat-icon>personapron</mat-icon>
+          <span>Employee</span>
+        </button>
+    <button mat-menu-item (click)="logout()">
+          <mat-icon>exit_to_app</mat-icon>
+          <span>Logout</span>
+        </button>
+    </span>
+    </mat-menu>
+    </span>
+    }
+    <span class="fill-remaining-space">Manufacture</span>
+  </mat-toolbar>
 <router-outlet>
 </router-outlet>

@@ -16,5 +16,4 @@ export interface UserItem {
     company_code: string,
     company_name: string,
     token: string
-
 }

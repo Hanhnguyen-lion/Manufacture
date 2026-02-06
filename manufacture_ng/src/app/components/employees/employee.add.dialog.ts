@@ -26,6 +26,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { map, Observable } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { DepartmentItem } from '../../models/department';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'employee.add.dialog',
@@ -69,16 +70,20 @@ export class EmployeeAddDialog implements OnInit {
 
   constructor(
         private svc: BaseService,
+        private authService: AuthService,
         private fb: FormBuilder,
         private dialogRef: MatDialogRef<EmployeeAddDialog>) { 
         }
 
   ngOnInit(): void {
     this.isUpdating.set(false);
-    const url = `${enviroment.apiUrl}/company/companies_departments`;
-    this.companyItems = this.svc.FindAllItems(url);
-
-
+    let url = `${enviroment.apiUrl}/company/companies_departments`;
+    if (this.authService.userValue && this.authService.userValue.role != "Super Admin"){
+      this.companyItems = this.svc.FindAllItems(`${url}/${this.authService.userValue?.company_id}`);
+    }
+    else{
+      this.companyItems = this.svc.FindAllItems(url);
+    }
     this.form = this.fb.group({
             code: ["", Validators.required],
             name: ["", Validators.required],

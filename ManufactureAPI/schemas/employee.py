@@ -25,6 +25,7 @@ def employeeDepartmentEntity(item) -> dict:
         "code": item["code"],
         "name": item["name"],
         "job_title": item["job_title"],
+        "company_id": item["company_id"],
         "company_name": item["company_name"],
         "department_name": item["department_name"]
     }

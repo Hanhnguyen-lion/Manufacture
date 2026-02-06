@@ -37,6 +37,7 @@ import {
 } from '@angular/material/dialog';
 import { DeleteDialog } from '../dialog/delete.dialog';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { AuthService } from '../../services/auth.service';
 
 
 @Component({
@@ -80,6 +81,7 @@ export class DepartmentList implements OnInit, AfterViewInit {
 
   constructor(
     private srv: BaseService,
+    private authService: AuthService,
     private fb: FormBuilder,
     private dialog: MatDialog
   ){
@@ -93,13 +95,27 @@ export class DepartmentList implements OnInit, AfterViewInit {
 
   ngOnInit(){
     this.loading.set(false);
-    this.companies = this.srv.FindAllItems(`${enviroment.apiUrl}/company`);
+    let url = `${enviroment.apiUrl}/company`;
+    if (this.authService.userValue && this.authService.userValue.role != "Super Admin"){
+      this.companies = this.srv.FindAllItems(`${url}/companies/${this.authService.userValue?.company_id}`);
+    }
+    else{
+      this.companies = this.srv.FindAllItems(url);
+    }
+
     this.LoadData();
   }
 
   LoadData(){
     this.loading.set(true);
     this.items = this.srv.FindAllItems(this.api_url);
+    if (this.authService.userValue && this.authService.userValue.role != "Super Admin"){
+      this.items = this.items.pipe(
+        map((arr: any[]) =>{
+          return arr.filter((item)=> item.company_id == this.authService.userValue?.company_id)
+        })
+      )
+    }
 
     this.items.subscribe(data=>{
       data.forEach(element=>{
