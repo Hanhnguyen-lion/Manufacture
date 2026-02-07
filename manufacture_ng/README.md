@@ -6,6 +6,8 @@ This project was generated using [Angular CLI](https://github.com/angular/angula
 ng add @angular/material
 "src/material-theme.scss",
 
+## npm install @ng-idle/core @ng-idle/keepalive
+
 To start a local development server, run:
 
 ```bash

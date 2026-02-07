@@ -1,6 +1,8 @@
 from bson import ObjectId
-from fastapi import APIRouter, HTTPException, status, Request, Response
+from fastapi import APIRouter, Depends, HTTPException, status, Request, Response
 
+from auth.auth_handler import signJWT, decodeJWT
+from auth.auth_bearer import JWTBearer
 from models.user import User, loginSchema
 from schemas.user import userEntity, usersCompanyEntity, usersEntity
 
@@ -8,7 +10,7 @@ user_router=APIRouter()
 
 M_Account = "M_Account"
 
-@user_router.post("/")
+@user_router.post("/", dependencies=[Depends(JWTBearer())])
 async def create_user(user:User, request: Request):
     exists_item = request.app.database.M_Account.find_one(
         {
@@ -19,9 +21,16 @@ async def create_user(user:User, request: Request):
         return HTTPException(status_code=status.HTTP_409_CONFLICT,
                              detail=f"Email already exists") 
 
+    token = signJWT(
+        user_id=user.email, 
+        role=user.role,
+        company_id=user.company_id)
+    
+    user.token = token["access_token"]
+
     new_tem = request.app.database.M_Account.insert_one(dict(user))
     if new_tem is not None:
-        return userEntity(request.app.database.M_Account.find_one({"_id": ObjectId(new_tem.inserted_id)}))
+        return token
     
     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                         detail=f"User Inserted fail")   
@@ -83,7 +92,7 @@ async def find_one_user(id: str, request: Request):
     
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User with ID {id} not found")
     
-@user_router.put("/{id}")
+@user_router.put("/{id}", dependencies=[Depends(JWTBearer())])
 async def update_User(id: str, user: User, request: Request):
 
     exists_item = request.app.database.M_Account.find_one(
@@ -94,6 +103,13 @@ async def update_User(id: str, user: User, request: Request):
         return HTTPException(
             status_code=status.HTTP_409_CONFLICT, 
             detail="Email already exists")
+    
+    token = signJWT(
+        user_id=user.email, 
+        role=user.role,
+        company_id=user.company_id)
+    
+    user.token = token["access_token"]
 
     update_result = request.app.database.M_Account.update_one({"_id": ObjectId(id)},{
         "$set": dict(user)})
@@ -102,10 +118,8 @@ async def update_User(id: str, user: User, request: Request):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"Employee with ID {id} not found")
     
-    exists_item = userEntity(request.app.database.M_Account.find_one({"_id": ObjectId(id)}))
-    
-    if exists_item is not None:
-        return exists_item
+    if token["access_token"]:
+        return token["access_token"]
     
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                         detail=f"User with ID {id} not found")
@@ -129,12 +143,24 @@ async def Authenticate(request: Request, user: loginSchema):
                                        "password": {"$eq": user.password}})
     if exists_item:
         exists_item = userEntity(exists_item)
-        user_item = {
-            "email": exists_item["email"],
-            "role": exists_item["role"],
-            "account_type":exists_item["account_type"],
-            "company_id": exists_item["company_id"]
-        }
-        return HTTPException(status_code=status.HTTP_200_OK, detail=user_item)
+        token = signJWT(
+            exists_item["email"],
+            exists_item["role"],
+            exists_item["company_id"])
+        # user_item = {
+        #     "email": exists_item["email"],
+        #     "role": exists_item["role"],
+        #     "account_type":exists_item["account_type"],
+        #     "company_id": exists_item["company_id"]
+        # }
+        return HTTPException(status_code=status.HTTP_200_OK, detail=token["access_token"])
     return HTTPException(status_code=status.HTTP_404_NOT_FOUND, 
                          detail="Email or Password incorrect")
+
+@user_router.get("/Authenticate/{token}")
+async def DecodeToken(token: str):
+    if token:
+        decode_token = decodeJWT(token)
+        return HTTPException(status_code=status.HTTP_200_OK, detail=decode_token)
+    return HTTPException(status_code=status.HTTP_403_FORBIDDEN, 
+                         detail="Invalid token or expired token.")

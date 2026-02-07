@@ -48,7 +48,6 @@ export class Login {
 
       this.authService.login(user).subscribe({
         next: (data) =>{
-          console.log("data: ", data);
           if (data.status_code == 200){
             const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
             this.router.navigateByUrl(returnUrl);
@@ -63,7 +62,6 @@ export class Login {
             console.log(error);
           }
       });
-
     }
   }
 }
