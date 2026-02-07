@@ -23,28 +23,29 @@ import { provideHttpClient } from '@angular/common/http';
 export class App implements OnInit{
 
   constructor(
-    private authService: AuthService,
-    private idle: Idle
+    private authService: AuthService
+    // ,
+    // private idle: Idle
   ){
     
-    idle.setIdle(900);
+    // idle.setIdle(900);
 
-    idle.setTimeout(60);
+    // idle.setTimeout(60);
 
-    idle.setInterrupts(DEFAULT_INTERRUPTSOURCES);
+    // idle.setInterrupts(DEFAULT_INTERRUPTSOURCES);
 
-    idle.onIdleEnd.subscribe(()=> 
-      console.log("User no longer ide"));
+    // idle.onIdleEnd.subscribe(()=> 
+    //   console.log("User no longer ide"));
 
-    idle.onTimeout.subscribe(()=>{
-      console.log("Session timed out! Logging out user")
+    // idle.onTimeout.subscribe(()=>{
+    //   console.log("Session timed out! Logging out user")
 
-      this.logout();
-    });
+    //   this.logout();
+    // });
 
-    idle.onIdleStart.subscribe(()=>{
-      console.log("User has gone ide !");
-    });
+    // idle.onIdleStart.subscribe(()=>{
+    //   console.log("User has gone ide !");
+    // });
 
     //idle.watch();
 

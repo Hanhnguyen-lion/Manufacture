@@ -17,6 +17,8 @@ export class AuthService {
     })};
 
   private userItemSubject: BehaviorSubject<UserItem | null>;
+  private tokenExpirationTimeout: any;
+
   public userItem: Observable<UserItem | null>;
   
   constructor(
@@ -36,10 +38,12 @@ export class AuthService {
               var token = response.detail;
 
               if (token){
+                this.setLogoutTimer(token);
                 localStorage.setItem("currentUser", JSON.stringify(token));
                 const payload = token.split('.')[1]; // Payload is the middle part
                 // Decode the base64-encoded payload
                 const decodedPayload = window.atob(payload);
+
                 this.userItemSubject.next(JSON.parse(decodedPayload));
               }
             }
@@ -47,10 +51,29 @@ export class AuthService {
           })
         );
   }
+  
+  private setLogoutTimer(token: string): void {
+    const expiryTime = this.getExpirationTime(token); // Function to get 'exp' claim
+    const timeUntilExpiry = expiryTime - Date.now();
+
+    if (this.tokenExpirationTimeout) {
+      clearTimeout(this.tokenExpirationTimeout);
+    }
+
+    this.tokenExpirationTimeout = setTimeout(() => this.logout(), timeUntilExpiry);
+  }
+
+  private getExpirationTime(token: string): number {
+    // Decode token and return expiration time in milliseconds
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    return payload.expires * 1000; // JWT exp is in seconds, convert to milliseconds
+  }
 
   logout() {
+      clearTimeout(this.tokenExpirationTimeout);
       this.userItemSubject.next(null);
-      localStorage.removeItem("currentUser")
+      window.localStorage.clear();
+      // localStorage.removeItem("currentUser")
       this.router.navigate(['/Login']);
   }
 
