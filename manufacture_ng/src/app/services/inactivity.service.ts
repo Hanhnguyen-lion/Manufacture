@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { AuthService } from './auth.service';
 
-const INACTIVITY_TIMEOUT = 10 * 60 * 1000;
+const INACTIVITY_TIMEOUT = 30 * 60 * 1000;
 const STORE_KEY = 'lastAction';
 
 @Injectable({

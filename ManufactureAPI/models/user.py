@@ -14,6 +14,8 @@ class User(BaseModel):
     account_type:str
     company_id:str
     token:str
+    create_date:datetime
+    modify_date:datetime
 
 class loginSchema(BaseModel):
     email:str

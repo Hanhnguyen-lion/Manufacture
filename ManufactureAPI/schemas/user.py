@@ -1,3 +1,6 @@
+from datetime import datetime
+
+
 def userEntity(item) -> dict:
     return{
         "id": str(item["_id"]),
@@ -12,7 +15,9 @@ def userEntity(item) -> dict:
         "role": item["role"],
         "account_type": item["account_type"],
         "company_id": item.get("company_id", ""),
-        "token": item["token"]
+        "token": item["token"],
+        "create_date": item.get("create_date", "1900-01-01"),
+        "modify_date": item.get("modify_date", "1900-01-01")
     }
 
 def loginEntity(item) -> dict:
@@ -37,7 +42,9 @@ def userCompanyEntity(item) -> dict:
         "company_id": item.get("company_id", ""),
         "company_code": item.get("company_code", ""),
         "company_name": item.get("company_name", ""),
-        "token": item["token"]
+        "token": item["token"],
+        "create_date": item.get("create_date", "1900-01-01"),
+        "modify_date": item.get("modify_date", "1900-01-01")
     }
 
 def usersEntity(entity) -> list:

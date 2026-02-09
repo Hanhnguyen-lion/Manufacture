@@ -1,10 +1,17 @@
 from bson import ObjectId
+from dotenv import dotenv_values
 from fastapi import APIRouter, Depends, HTTPException, status, Request, Response
 
 from auth.auth_handler import signJWT, decodeJWT
 from auth.auth_bearer import JWTBearer
 from models.user import User, loginSchema
 from schemas.user import userEntity, usersCompanyEntity, usersEntity
+
+from datetime import datetime
+
+from utils import expire_date
+
+config = dotenv_values(".env")
 
 user_router=APIRouter()
 
@@ -27,6 +34,9 @@ async def create_user(user:User, request: Request):
         company_id=user.company_id)
     
     user.token = token["access_token"]
+    
+    user.create_date = datetime.now()
+    user.modify_date = datetime.now()
 
     new_tem = request.app.database.M_Account.insert_one(dict(user))
     if new_tem is not None:
@@ -74,6 +84,8 @@ async def find_all_users(request: Request):
             "role": 1,
             "account_type": 1,
             "token": 1,
+            "create_date": 1,
+            "modify_date": 1,
             'company_id': 1,
             'company_code': '$company_details.code',
             'company_name': '$company_details.name'
@@ -110,6 +122,17 @@ async def update_User(id: str, user: User, request: Request):
         company_id=user.company_id)
     
     user.token = token["access_token"]
+    
+    item = request.app.database.M_Account.find_one({"_id": ObjectId(id)})
+    
+    today = datetime.now()
+    
+    if item.get("create_date", "1900-01-01") == "1900-01-01":
+        user.create_date = today
+    else:
+        user.create_date = item["create_date"]
+
+    user.modify_date = today
 
     update_result = request.app.database.M_Account.update_one({"_id": ObjectId(id)},{
         "$set": dict(user)})
@@ -143,17 +166,33 @@ async def Authenticate(request: Request, user: loginSchema):
                                        "password": {"$eq": user.password}})
     if exists_item:
         exists_item = userEntity(exists_item)
-        token = signJWT(
-            exists_item["email"],
-            exists_item["role"],
-            exists_item["company_id"])
-        # user_item = {
-        #     "email": exists_item["email"],
-        #     "role": exists_item["role"],
-        #     "account_type":exists_item["account_type"],
-        #     "company_id": exists_item["company_id"]
-        # }
-        return HTTPException(status_code=status.HTTP_200_OK, detail=token["access_token"])
+
+        role = exists_item["role"]
+        account_type = exists_item["account_type"]
+        create_date = exists_item["create_date"]
+
+        freeExpireDay = config["FreeExpireDay"]
+        memberExpireDay = config["MemberExpireDay"]
+
+        expire:bool = False
+        if role != "Super Admin":
+            if account_type == "Free":
+                expire = expire_date(create_date.date(), int(freeExpireDay))
+            else:
+                expire = expire_date(create_date.date(), int(memberExpireDay))
+
+        if expire:
+
+            return HTTPException(status_code=status.HTTP_409_CONFLICT, detail="This Account is expire.")
+        
+        else:
+            token = signJWT(
+                exists_item["email"],
+                exists_item["role"],
+                exists_item["company_id"])
+
+            return HTTPException(status_code=status.HTTP_200_OK, detail=token["access_token"])
+
     return HTTPException(status_code=status.HTTP_404_NOT_FOUND, 
                          detail="Email or Password incorrect")
 
