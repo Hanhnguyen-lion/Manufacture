@@ -5,8 +5,6 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterLink, RouterOutlet } from "@angular/router";
 import { AuthService } from './services/auth.service';
-import {Idle, DEFAULT_INTERRUPTSOURCES} from '@ng-idle/core'
-import { provideHttpClient } from '@angular/common/http';
 import { InactivityService } from './services/inactivity.service';
 
 @Component({
