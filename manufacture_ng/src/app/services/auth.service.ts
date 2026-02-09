@@ -6,6 +6,8 @@ import { Router } from '@angular/router';
 import { enviroment } from '../enviroments/enviroment';
 import { BaseService } from './base-service';
 
+const STORE_KEY = 'lastAction';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -63,7 +65,7 @@ export class AuthService {
     this.tokenExpirationTimeout = setTimeout(() => this.logout(), timeUntilExpiry);
   }
 
-  private getExpirationTime(token: string): number {
+  public getExpirationTime(token: string): number {
     // Decode token and return expiration time in milliseconds
     const payload = JSON.parse(atob(token.split('.')[1]));
     return payload.expires * 1000; // JWT exp is in seconds, convert to milliseconds
@@ -72,8 +74,9 @@ export class AuthService {
   logout() {
       clearTimeout(this.tokenExpirationTimeout);
       this.userItemSubject.next(null);
+      localStorage.removeItem("currentUser")
+      localStorage.removeItem(STORE_KEY);
       window.localStorage.clear();
-      // localStorage.removeItem("currentUser")
       this.router.navigate(['/Login']);
   }
 

@@ -7,6 +7,7 @@ import { RouterLink, RouterOutlet } from "@angular/router";
 import { AuthService } from './services/auth.service';
 import {Idle, DEFAULT_INTERRUPTSOURCES} from '@ng-idle/core'
 import { provideHttpClient } from '@angular/common/http';
+import { InactivityService } from './services/inactivity.service';
 
 @Component({
   selector: 'app-root',
@@ -23,7 +24,8 @@ import { provideHttpClient } from '@angular/common/http';
 export class App implements OnInit{
 
   constructor(
-    private authService: AuthService
+    private authService: AuthService,
+    private inactivityService: InactivityService
     // ,
     // private idle: Idle
   ){
@@ -52,7 +54,23 @@ export class App implements OnInit{
   }
 
   ngOnInit() {
-    
+    if (this.authService.getToken){
+      const expiryTime = this.authService.getExpirationTime(this.authService.getToken);
+      const timeUntilExpiry = expiryTime - Date.now();
+
+      if (new Date(expiryTime) > new Date()){
+      console.log("expiryTime: ", expiryTime, new Date(expiryTime), new Date());
+    }
+      else{
+        console.log("logout: ", expiryTime, new Date(expiryTime), new Date());
+      }
+    }
+
+    this.inactivityService.setLastAction(Date.now()); // Set initial time on app load/login
+    this.inactivityService.logoutAction$.subscribe(() => {
+      console.log('User has been logged out due to inactivity.');
+      // Additional logout logic if needed
+    });
   }
   
   isAuthenticate(){
