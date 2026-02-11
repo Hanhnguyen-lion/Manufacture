@@ -1,4 +1,8 @@
-body {
+/* You can add global styles to this file, and also import other style files */
+
+@import "tailwindcss";
+
+/* body {
   font-family: Roboto, 'Helvetica Neue', sans-serif;
   margin: 0;
   padding: 30px;
@@ -10,21 +14,4 @@ html {
 }
 table {
   width: 100%;
-}
-
-.custom-mat-mdc-form-field {
-  width: 100%;
-  font-size: 10px;
-}
-/* 
-.mat-mdc-form-field {
-  font-size: 12px;
 } */
-
-.error-message {
-  color: #dc3545;
-}
-.mat-mdc-row:hover {
-  background-color: #d7e3ff; /* Change to your desired hover color */
-  cursor: pointer;
-}

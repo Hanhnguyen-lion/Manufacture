@@ -1,47 +1,20 @@
 import { Routes } from '@angular/router';
-
-import { CompanyList } from './components/companies/company-list';
-import { EmployeeList } from './components/employees/employee-list';
-import { DialogAnimationsExample } from './components/test/dialog-animations-example';
-import { DepartmentList } from './components/departments/department.list';
-import { UserList } from './components/users/user-list';
-import { Login } from './components/users/login';
-import { AuthGuard } from './services/auth.guard';
-import { Home } from './components/home/home';
+import { Login } from './components/account/login';
+import { HomePage } from './components/home/home.page';
+import { AuthGuard } from './service/auth.guard';
 
 export const routes: Routes = [
     {
-        path: "",
-        component: Home,
-        canActivate:[AuthGuard]
+        path:"",
+        component: HomePage,
+        canActivate: [AuthGuard]
     },
     {
-        path: "Company",
-        component: CompanyList,
-        canActivate:[AuthGuard]
-    },
-    {
-        path: "Employee",
-        component: EmployeeList,
-        canActivate:[AuthGuard]
-    },
-    {
-        path: "Department",
-        component: DepartmentList,
-        canActivate:[AuthGuard]
-    },
-    {
-        path: "User",
-        component: UserList,
-        canActivate:[AuthGuard]
-    },
-    {
-        path: "Login",
+        path:"Login",
         component: Login
     },
     {
-        path: "Test",
-        component: DialogAnimationsExample
-    },
-    { path: '**', redirectTo: '' }
+        path: "**",
+        redirectTo: ""
+    }
 ];

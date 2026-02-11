@@ -1,6 +1,0 @@
-pymongo
-fastapi[all] 
-python-dotenv
-pydantic-settings
-PyJWT
-python-decouple
