@@ -151,6 +151,8 @@ async def authenticate(request: Request, loginItem: LoginSchema):
         else:
             token = signJWT(
                 exists_item["email"],
+                exists_item["last_name"],
+                exists_item["first_name"],
                 exists_item["role"],
                 exists_item["company_id"])
 
