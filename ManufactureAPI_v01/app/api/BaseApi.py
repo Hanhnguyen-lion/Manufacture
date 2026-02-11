@@ -24,12 +24,16 @@ async def CreateItem(
         table_name: str,
         message_err:str,
         message_duplicate:str,
-        check_duplicate:bool=True):
+        check_duplicate:bool=True,
+        key_duplicate:str="code",
+        value_duplicate:str=None):
 
     if check_duplicate:
+        if value_duplicate is None:
+             value_duplicate = item.code
         exists_item = request.app.database[table_name].find_one(
             {
-                "code": {"$regex": item.code, "$options": "i"}
+                key_duplicate: {"$regex": value_duplicate, "$options": "i"}
             })
         
         if exists_item:
@@ -73,11 +77,15 @@ async def UpdateItem(
         table_name: str,
         message_err: str,
         message_duplicate: str,
-        check_duplicate:bool=True):
+        check_duplicate:bool=True,
+        key_duplicate:str="code",
+        value_duplicate:str=None):
 
     if check_duplicate:
+        if value_duplicate is None:
+             value_duplicate = item.code
         exists_item = request.app.database[table_name].find_one(
-                                        {"code": {"$regex": item.code, "$options": "i"},
+                                        {key_duplicate: {"$regex": item[value_duplicate], "$options": "i"},
                                         "_id": {"$ne": ObjectId(id)}})
         if exists_item:
             return HTTPException(

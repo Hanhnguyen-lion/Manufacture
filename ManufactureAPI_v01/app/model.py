@@ -74,4 +74,43 @@ class ProductItem(BaseModel):
 class Department(BaseModel):
     name:str
     phone:str
-    company_id:str    
+    company_id:str
+
+class Employee(BaseModel):
+    company_id:str
+    department_id:str
+    code:str
+    name:str
+    job_title:str
+    hire_date:datetime
+    employment_area:str
+    date_of_birth:datetime
+    type_of_blood:str
+    place_of_birth:str
+    driving_licence:bool
+    licences:bool
+    address:str
+    phone_number:str
+    email:str
+    gender:str
+
+
+class User(BaseModel):
+    password:str
+    first_name:str
+    last_name:str
+    dob:datetime
+    gender:str
+    address:str
+    phone:str
+    email:str
+    role:str
+    account_type:str
+    company_id:str
+    token:str
+    create_date:datetime
+    modify_date:datetime
+
+class LoginSchema(BaseModel):
+    email:str
+    password:str    
