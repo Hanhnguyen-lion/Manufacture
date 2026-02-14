@@ -58,7 +58,7 @@ app.add_middleware(
 )
 
 app.include_router(app_router, tags=["companies"], prefix="/Manufacture/api/company_departments")
-app.include_router(category_router, tags=["categoies"], prefix="/Manufacture/api/category")
+app.include_router(category_router, tags=["categories"], prefix="/Manufacture/api/category")
 app.include_router(storage_router, tags=["storages"], prefix="/Manufacture/api/storage")
 app.include_router(product_router, tags=["products"], prefix="/Manufacture/api/product")
 app.include_router(item_router, tags=["items"], prefix="/Manufacture/api/item")
