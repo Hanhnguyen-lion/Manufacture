@@ -37,8 +37,79 @@ async def add(item: ItemProcess, request: Request):
 @item_process_router.get("/")
 async def getItems(request: Request):
     
-    items = await GetAllItems(request=request, table_name=J_Item_Process)
-    return itemProcessesEntity(items)
+    items = get_item_process_detail(request)
+    return items
+    # items = await GetAllItems(request=request, table_name=J_Item_Process)
+    # return itemProcessesEntity(items)
+
+# @item_process_router.get("/item_process_detail")
+# async def getItemProcessDetail(request: Request):
+    
+#     items = get_item_process_detail(request)
+#     return items
+
+
+def get_item_process_detail(request: Request):
+
+    results = request.app.database['J_Item_Process'].aggregate([
+        { "$lookup": {
+            "from": "M_Item",
+            "let": { "item_id": "$item_id" },
+            "pipeline": [
+            { "$match": { "$expr": { "$eq": [{ "$toString": "$_id" }, "$$item_id"] }}}
+            ],
+            "as": "item_details"
+        }},
+        {
+            '$unwind': '$item_details'
+        },
+        { 
+            "$lookup": {
+                "from": "M_Process",
+                "let": { "process_id": "$process_id" },
+                "pipeline": [
+                    { "$match": { "$expr": { "$eq": [{ "$toString": "$_id" }, "$$process_id"] }}}
+                ],
+                "as": "process_details"
+            }
+        },
+        {
+            '$unwind': '$process_details'
+        }
+        ,
+        {
+            "$project":{
+                "_id": { '$toString': "$_id" },
+                "item_id": { '$toString': "$item_details._id" },
+                "item_code": "$item_details.code",
+                "item_name": "$item_details.name",
+                "item_quantity": "$item_details.quantity",
+                "item_start_plan_date": "$item_details.start_plan_date",
+                "item_end_plan_date": "$item_details.end_plan_date",
+                "item_production_date": "$item_details.production_date",
+                "item_created_date": "$item_details.created_date",
+                "process_details": [
+                    {
+                        "process_id": { '$toString': "$process_details._id" },
+                        "code": "$process_details.code",
+                        "name": "$process_details.name",
+                        "description": "$process_details.description",
+                        "duration": "$process_details.duration",
+                        "cost": "$process_details.cost",
+                        "company_id": "$process_details.company_id",
+                        "department_id": "$process_details.department_id"
+                    }
+                ]
+            }
+        }
+        ])
+    # result_list = []
+    # for doc in results:
+    #     doc['_id'] = str(doc['_id'])
+    #     result_list.append(doc)
+
+    return list(results)
+
 
 @item_process_router.get("/{id}")
 async def getItemById(id: str, request:Request):
