@@ -1,54 +1,63 @@
 <h3>Product List</h3>
-<div class="flex">
-  <div class="contents">
-    <div class="flex-1">
-        <div class="flex items-center">
-            <div>
-                <strong>Product 1</strong>
-            </div>
-        </div>
-        <div class="w-full bg-gray-300 rounded-full h-4">
+<!-- 
+<div class="stats shadow">
+  <div class="stat">
+    <div class="stat-title">Product 1</div>
+    <div class="stat-value">
+        <div class="w-full bg-gray-200 rounded-full h-4">
             <div
                 id="progress-fill"
                 class="bg-green-600 h-4 rounded-full transition-all duration-500 ease-out"
                 style="width: 75%"></div>
-        </div>
-    </div>
-    <div class="flex-1">
-        <div class="flex items-center">
-            <div>
-                <strong>Product 2</strong>
-                <!-- <span>Product 1</span> -->
             </div>
+    </div>
+    <div class="stat-desc"></div>
+  </div>
+</div>
+<br>
+<div class="stats shadow">
+  <div class="stat">
+    <div class="stat-title">Product 2</div>
+    <div class="stat-value">
+        <div class="radial-progress" style="--value:20;" aria-valuenow="20" role="progressbar">20%</div>
+        <div class="w-full bg-gray-200 rounded-full h-4">
+            <div
+                id="progress-fill"
+                class="bg-green-600 h-4 rounded-full transition-all duration-500 ease-out"
+                style="width: 33%"></div>
         </div>
-        <div class="w-full bg-gray-300 rounded-full h-4">
+
+    </div>
+    <div class="stat-desc"></div>
+  </div>
+</div>
+<br>
+<div class="stats shadow">
+  <div class="stat">
+    <div class="stat-title">Product 3</div>
+    <div class="stat-value">
+        <div class="w-full bg-gray-200 rounded-full h-4">
             <div
                 id="progress-fill"
                 class="bg-green-600 h-4 rounded-full transition-all duration-500 ease-out"
                 style="width: 0%"></div>
         </div>
     </div>
+    <div class="stat-desc"></div>
   </div>
-</div>
-<div class="flex">
-  <div class="contents">
-    <div class="flex-1">
-        <div class="flex items-center">
-            <div>
-                <strong>Product 3</strong>
-            </div>
+</div> -->
+@for (item of products; track $index) {
+    <div class="mx-auto bg-white">
+        <div class="flex justify-between mb-1">
+            <span class="text-base font-medium text-black-700">{{item.product_name}} Completion</span>
+            <span class="text-sm font-medium text-black-700">{{item.percent_complete}}%</span>
         </div>
-        <div class="w-full bg-gray-300 rounded-full h-4">
-            <div
-                id="progress-fill"
-                class="bg-green-600 h-4 rounded-full transition-all duration-500 ease-out"
-                style="width: 100%"></div>
+        <div class="w-full bg-gray-200 rounded-full h-4">
+            <div class="bg-green-600 h-4 rounded-full" [style.width.%]="item.percent_complete"></div>
         </div>
     </div>
-  </div>
-</div>
-
-<script>
+}
+<!-- <script>
   // Example function to update progress
   function updateProgress(percentage) {
     const progressBar = document.getElementById('progress-fill');
@@ -61,4 +70,4 @@
   document.addEventListener('DOMContentLoaded', () => {
     updateProgress(75);
   });
-</script>
+</script> -->

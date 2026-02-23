@@ -1,4 +1,4 @@
-import { Component} from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterOutlet, RouterLinkWithHref, ActivatedRoute, Router } from '@angular/router';
@@ -15,7 +15,7 @@ import { AuthService } from './service/auth.service';
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
-export class App {
+export class App implements OnInit {
 
   currentYear = new Date().getFullYear();
 
@@ -24,6 +24,8 @@ export class App {
     private router: Router,
     private route: ActivatedRoute
   ){
+  }
+  ngOnInit(): void {
     const returnUrl = this.route.snapshot.queryParams['returnUrl'];
     console.log("returnUrl:", returnUrl);
   }
