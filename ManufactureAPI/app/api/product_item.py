@@ -80,6 +80,7 @@ def get_product_item_detail(request: Request):
                         "item_id": { '$toString': "$item_details._id" },
                         "code": "$item_details.code",
                         "name": "$item_details.name",
+                        "status": "$item_details.status",
                         "quantity": "$item_details.quantity",
                         "start_plan_date": "$item_details.start_plan_date",
                         "end_plan_date": "$item_details.end_plan_date",

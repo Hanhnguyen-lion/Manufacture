@@ -83,6 +83,7 @@ def get_item_process_detail(request: Request):
                 "item_id": { '$toString': "$item_details._id" },
                 "item_code": "$item_details.code",
                 "item_name": "$item_details.name",
+                "item_status": "$item_details.status",
                 "item_quantity": "$item_details.quantity",
                 "item_start_plan_date": "$item_details.start_plan_date",
                 "item_end_plan_date": "$item_details.end_plan_date",

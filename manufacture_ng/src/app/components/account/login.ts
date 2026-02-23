@@ -50,7 +50,7 @@ export class Login {
       this.authService.login(user).subscribe({
         next:(data)=>{
           if (data.status_code == 200){
-            const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+            const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/Production';
             this.router.navigateByUrl(returnUrl);
           }
           else{
