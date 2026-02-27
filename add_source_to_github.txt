@@ -1,0 +1,12 @@
+hnguyen@hn:/data/projects/ERP/Manufacture$ git remote add origin https://github.com/Hanhnguyen-lion/Manufacture.git
+hnguyen@hn:/data/projects/ERP/Manufacture$ git branch -M main
+hnguyen@hn:/data/projects/ERP/Manufacture$ git push -u origin main
+
+hnguyen@hn:/data/projects/ERP/Manufacture$ git add .
+hnguyen@hn:/data/projects/ERP/Manufacture$ git commit -m "add python API"
+hnguyen@hn:/data/projects/ERP/Manufacture$ git remote -v
+origin	https://github.com/Hanhnguyen-lion/Manufacture.git (fetch)
+origin	https://github.com/Hanhnguyen-lion/Manufacture.git (push)
+hnguyen@hn:/data/projects/ERP/Manufacture$ git remote set-url origin git@github.com:hanhnguyen-lion/Manufacture.git
+hnguyen@hn:/data/projects/ERP/Manufacture$ git push -u origin main --force
+

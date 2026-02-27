@@ -1,0 +1,155 @@
+
+lsb_release -a: check version Ubuntu
+healthcare_db
+hanhnguyenlion_db_user
+abc123456789
+
+npm install vue-flag-icon
+
+116.110.40.50/32
+
+http://localhost:5231/swagger/index.html
+
+mongodb+srv://healthcare_db:abc123456789@healthcare.on4llao.mongodb.net/?appName=healthcare
+
+mongosh "mongodb+srv://healthcare.on4llao.mongodb.net/healthcare" --apiVersion 1 --username healthcare_db
+
+mongosh "mongodb+srv://mycluster.abcd1.mongodb.net/myFirstDatabase" --apiVersion 1 --username <username>
+
+abc123456789
+mongodb+srv://<db_username>:<db_password>@cluster0.9vibayn.mongodb.net/?appName=Cluster0
+
+mongosh "mongodb+srv://healthcare_db:abc123456789@healthcare.on4llao.mongodb.net/?appName=healthcare"
+
+dotnet add package MongoDB.Driver
+
+https://repo.mongodb.org/apt/ubuntu/dists/noble/mongodb-org/8.2/multiverse/binary-arm64/mongodb-org-server_8.2.2_arm64.deb
+
+curl -fsSL https://www.mongodb.org/static/pgp/server-8.0.asc | \
+   sudo gpg -o /usr/share/keyrings/mongodb-server-8.0.gpg \
+   --dearmor
+error: src refspec main does not match any
+error: failed to push some refs to 'origin
+
+https://github.com/Hanhnguyen-lion/healthcare
+
+git remote -v
+
+git remote set-url origin git@github.com:hanhnguyen-lion/healthcare.git
+git remote set-url origin git@github.com:hanhnguyen-lion/healthcare_vue.git
+git remote set-url origin git@github.com:hanhnguyen-lion/healthcare_vue.git
+
+origin	https://github.com/Hanhnguyen-lion/Manufacture.git (fetch)
+origin	https://github.com/Hanhnguyen-lion/Manufacture.git (push)
+
+git remote set-url origin git@github.com:hanhnguyen-lion/Manufacture_HR.git
+
+ng generate c hospitals/ViewHospitals --flat --skip-tests
+
+https://meet.google.com/gbe-ihch-tpt?pli=1
+
+git reset --hard origin/main
+
+git clone https://github.com/Hanhnguyen-lion/healthcare_vue.git
+
+npm install jw-paginate
+
+
+1) add treatment table
+2) Design treatment is table
+3) loai thuoc, loai benh (vn, en, jp)
+4) appointment
+
+
+javascript
+npm install -g @vue/cli
+To create a new project, run:
+
+javascript
+vue create project-name
+run vue
+
+javascript
+npm run serve 
+
+install bootstrap
+npm install bootstrap @popperjs/core
+install vue-router
+npm install vue-router@4
+
+-- install axios
+npm install axios
+
+npm i @vueuse/core
+-- install vue-confirm-dialog
+npm i vue3-confirm-dialog
+
+npm i vue3-datepicker
+
+healthcare_vue/medicalcare
+/README.md
+
+category: export and import
+hospital: export and import
+
+login: remove register button
+add account menu
+
+daysUntilExpiration() {
+    const now = new Date();
+    const expiry = new Date(this.expirationDate);
+    const timeDiff = expiry.getTime() - now.getTime(); // Difference in milliseconds
+    const days = Math.ceil(timeDiff / (1000 * 60 * 60 * 24)); // Convert to days
+
+    // Return the number of days if it's 15 or less, otherwise return null or handle as needed
+    return days > 0 && days <= 15 ? days : null;
+  }
+  
+  NhanVien: (MaNV, HoTen, NgaySinh, GioiTinh, DiaChi, SoDienThoai, Email, MaPB, MaCV, NgayVaoLam, TrinhDo, TinhTrang)
+PhongBan (PB): (MaPB, TenPB, DiaDiem)
+ChucVu (CV): (MaCV, TenCV, LuongCoBan, PhuCap)
+HopDong (HD): (MaHD, MaNV, NgayKy, NgayHetHan, LoaiHD, LuongHD)
+ChamCong (CC): (MaCC, MaNV, Ngay, GioVao, GioRa, SoGioLam)
+Luong (Lương): (MaLuong, MaNV, Thang, Nam, TongLuong, GhiChu)
+KhenThuongPhat (KTP): (MaKTP, MaNV, Ngay, Loai, SoTien, LyDo)
+DuAn (DA): (MaDA, TenDA, NgayBatDau, NgayKetThuc)
+NhanVienDuAn (NVDA) (Bảng trung gian cho quan hệ nhiều-nhiều): (MaNV, MaDA, VaiTro)
+source $HOME/.local/bin/env (sh, bash, zsh)
+    source $HOME/.local/bin/env.fish (fish)
+    
+    ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'root';
+
+pip3 install virtualenv
+
+Link đăng nhập: https://login.ecount.com/Login/VN/
+Code: 909964
+ID: QLDH
+Password: 1q2w3e4r5t    
+
+https://github.com/hoanh75jp-dieukhien
+
+noreplyhnguyennguyen@gmail.com/H123456789@
+
+Please verify your identity, Hanhnguyen-lion
+ 
+Here is your GitHub sudo authentication code:
+
+55415586
+ 
+This code is valid for 15 minutes and can only be used once.
+
+Please don't share this code with anyone: we'll never ask for it on the phone or via email.
+
+Thanks,
+The GitHub Team
+
+HealthCare:zwfx ufqt vzsy agbk
+
+/Medicalcare/api/Accounts/ForgotPassword
+
+git remote add origin https://github.com/<USER>/<repo>.git
+git branch -M main
+git push -u origin main
+
+ngx-datatable
+
